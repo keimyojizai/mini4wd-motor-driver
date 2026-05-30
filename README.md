@@ -20,15 +20,15 @@
 
 ### 基板単体
 
-![モータードライバ基板 単体](docs/board_photo.jpg)
+<img src="docs/board_photo.jpg" alt="モータードライバ基板 単体" width="500">
 
 ### 販売パッケージ
 
-![販売パッケージ例](docs/package_photo.jpg)
+<img src="docs/package_photo.jpg" alt="販売パッケージ例" width="500">
 
 ### ミニ四駆への装着例
 
-![ミニ四駆への装着例](docs/mounted_example.jpg)
+<img src="docs/mounted_example.jpg" alt="ミニ四駆への装着例" width="500">
 
 > 装着例です。ミニ四駆車体、XIAO MG24 Sense、モーター、電池、配線材等は付属しません。
 
