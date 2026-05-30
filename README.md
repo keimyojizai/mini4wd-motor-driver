@@ -16,18 +16,25 @@
 
 ---
 
-## 基板レンダリング
+## 外観・パッケージ・装着例
 
-製造予定基板の3Dレンダリング画像です。  
-実物写真は、完成基板の到着後に追記予定です。
+### 基板単体
 
-### 表面
+![モータードライバ基板 単体](docs/board_photo.jpg)
 
-![モータードライバ基板 表面 3Dレンダリング](docs/pcb_front_3D.png)
+### 販売パッケージ
 
-### 裏面
+![販売パッケージ例](docs/package_photo.jpg)
 
-![モータードライバ基板 裏面 3Dレンダリング](docs/pcb_back_3D.png)
+### ミニ四駆への装着例
+
+![ミニ四駆への装着例](docs/mounted_example.jpg)
+
+> 装着例です。ミニ四駆車体、XIAO MG24 Sense、モーター、電池、配線材等は付属しません。
+
+### 動作例
+
+[YouTube Shortsで動作例を見る](https://youtube.com/shorts/a6D7kiM3N_Y?feature=share)
 
 ---
 
