@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r15 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r16 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -412,6 +412,22 @@ body.layout-resizing *{cursor:col-resize!important}
   border-color:transparent;box-shadow:0 4px 14px rgba(76,201,255,.26);
 }
 .workspace-menu-btn small{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:900;opacity:.75}
+
+.workspace-menu-save-btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 11px;border-radius:12px;border:1px solid rgba(255,194,74,.42);
+  background:linear-gradient(135deg,rgba(255,194,74,.18),rgba(255,127,80,.10));
+  color:var(--ink);font-size:12.5px;font-weight:950;text-align:left;
+  box-shadow:0 0 18px rgba(255,194,74,.10);line-height:1.35;
+}
+.workspace-menu-save-btn:hover{border-color:rgba(255,194,74,.85);background:linear-gradient(135deg,rgba(255,194,74,.28),rgba(255,127,80,.16));box-shadow:0 0 22px rgba(255,194,74,.18)}
+.workspace-menu-save-btn small{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:900;opacity:.82;color:var(--neon-amber)}
+.workspace-menu-save-note{font-size:10.5px;line-height:1.55;color:var(--ink-soft);margin:7px 2px 12px}
+.save-confirm-body{display:grid;gap:12px;line-height:1.75;color:var(--ink-dim);font-size:14px}
+.save-confirm-body b{color:var(--ink)}
+.save-confirm-warning{border:1px solid rgba(255,194,74,.42);background:rgba(255,194,74,.08);border-radius:12px;padding:10px 12px;color:var(--ink)}
+.save-confirm-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:16px}
+.save-confirm-actions .btn{min-width:120px}
 .workspace-menu-divider{height:1px;background:linear-gradient(90deg,rgba(120,160,255,.28),transparent);margin:11px 0}
 .workspace-card-controls{display:grid;gap:7px}
 .workspace-card-control{
@@ -2995,7 +3011,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r15 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r16 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
@@ -3049,6 +3065,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         <button type="button" class="workspace-menu-btn" data-workspace-view="firmware">更新 <small>FW</small></button>
         <button type="button" class="workspace-menu-btn" data-workspace-view="all">全部表示 <small>ALL</small></button>
       </div>
+      <button type="button" class="workspace-menu-save-btn" id="btnSaveToDeviceMenu" title="現在の画面設定を本体へ保存します。押すと確認画面が出ます。">💾 本体へ保存 <small>SAVE</small></button>
+      <div class="workspace-menu-save-note">電源OFF後・スタンドアローン起動で使う設定を保存します。押すと確認画面が出ます。</div>
       <div class="workspace-menu-divider"></div>
       <div class="workspace-sidebar-title"><span>Cards</span><span>表示/順番</span></div>
       <div class="workspace-card-controls" id="workspaceCardControls"></div>
@@ -3070,19 +3088,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         <!-- 走行コントロール (旧 走行・ログ タブから移動) -->
         <div class="card status-card" data-workspace-card="run" data-workspace-title="走行・ラップ">
           <div class="card-title">走行コントロール</div>
-          <div class="muted" style="margin:-4px 0 10px">走行の開始・停止・接続は、画面上部のヘッダーから操作します。走行開始時は現在の設定とルールを一時適用して走行します。</div>
-          <div class="header-save-note">
-            <div><b>保存は走行操作とは別です。</b><br>走行開始は現在の画面設定を一時適用します。電源を切った後も使う設定、またはスタンドアローン起動で使う設定は、下の「本体へ保存」を押してください。</div>
-          </div>
-          <div class="standalone-save-panel" style="border:1px solid rgba(255,194,74,.45);background:rgba(255,194,74,.08);border-radius:16px;padding:14px;margin:12px 0 16px">
-            <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-              <div style="line-height:1.65">
-                <b>本体へ保存（スタンドアローン用）</b><br>
-                <span class="muted">最後に保存した設定が、電源OFF後・裏返し起動時に使われます。</span>
-              </div>
-              <button class="btn warning" id="btnSaveToDeviceRun" title="現在の画面設定を本体へ保存します。スタンドアローン起動で使う設定です。">💾 本体へ保存</button>
-            </div>
-          </div>
+          <div class="muted" style="margin:-4px 0 10px">走行の開始・停止・接続は、画面上部のヘッダーから操作します。走行開始時は現在の設定とルールを一時適用して走行します。本体へ保存は左メニューから行います。</div>
           <div class="split">
             <div class="status-tile">
               <div class="tiny">Status</div>
@@ -3168,7 +3174,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r15</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r16</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -3335,14 +3341,13 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
             </label>
             <span class="spacer"></span>
             <button class="btn-hint" type="button" data-hint="priority" style="margin-right:6px">💡 優先度とブロックの仕組み</button>
-            <button class="btn warning" id="btnSaveToDevice" title="現在のパラメータ・ルール・電圧補正・周回認識を本体の不揮発メモリへ保存します。スタンドアローン起動で使われる設定です。">💾 本体へ保存（スタンドアローン用）</button>
             <button class="btn btn-secondary" id="btnExport">⇧ JSON保存</button>
             <button class="btn btn-secondary" id="btnImport">⇩ JSON読込</button>
             <button class="btn btn-secondary" id="btnQrShow">⌗ QR表示</button>
             <button class="btn btn-secondary" id="btnQrScan">⌘ QR読込</button>
             <input type="file" id="importFile" accept="application/json,.json" style="display:none">
           </div>
-          <div class="muted" style="margin:-2px 0 12px;line-height:1.65"><b>本体へ保存:</b> 「走行開始」は現在の画面設定を一時適用します。電源を切った後も使う設定、または裏返し起動のスタンドアローンモードで使う設定は、必ず「本体へ保存」を押してください。</div>
+          <div class="muted" style="margin:-2px 0 12px;line-height:1.65"><b>本体へ保存:</b> 電源OFF後・裏返し起動のスタンドアローンモードで使う設定は、左メニューの「本体へ保存」から保存してください。保存前に確認画面が出ます。</div>
           <div id="rulesList"></div>
           </div>
         </div>
@@ -3449,6 +3454,26 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       <button class="qr-tab-btn" type="button" data-help="priority">優先度&ブロック</button>
     </div>
     <div id="helpModalBody"></div>
+  </div>
+</div>
+
+<!-- ===== 本体保存 確認モーダル ===== -->
+<div id="saveConfirmModal" class="qr-modal" hidden>
+  <div class="qr-modal-bg" id="saveConfirmBg"></div>
+  <div class="qr-modal-card" style="max-width:640px">
+    <div class="qr-modal-head">
+      <h3>本体へ保存しますか？</h3>
+      <button class="ghost qr-close" id="saveConfirmClose">✕</button>
+    </div>
+    <div class="save-confirm-body">
+      <div><b>現在の画面設定をXIAO MG24 Sense本体へ保存します。</b></div>
+      <div>保存した設定は、電源OFF後も残り、裏返し起動のスタンドアローンモードで使われます。</div>
+      <div class="save-confirm-warning" id="saveConfirmRuleWarning">走行開始は一時適用です。本体へ保存すると、最後に保存した設定が上書きされます。</div>
+      <div class="save-confirm-actions">
+        <button class="btn btn-secondary" id="saveConfirmNo">いいえ</button>
+        <button class="btn warning" id="saveConfirmYes">はい、保存する</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -8791,16 +8816,49 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   async function cmd(c){await writeCommandBytes([c])}
   async function saveConfigToDevice(){
     await requireConn();
-    if(rules.length===0 && !confirm('ルールが0本です。この状態を本体に保存しますか？\nスタンドアローン起動では自動スタートしません。'))return;
     toast('現在の設定を本体へ保存します');
     await sendParams();
     await sendRules();
     await cmd(6);
     toast('本体へ保存しました。次回の裏返し起動はこの設定で動作します');
   }
+  function showSaveConfirmDialog(){
+    return new Promise(resolve=>{
+      const m=$('saveConfirmModal');
+      if(!m){resolve(window.confirm('現在の設定を本体へ保存しますか？'));return;}
+      const warn=$('saveConfirmRuleWarning');
+      if(warn){
+        warn.textContent=rules.length===0
+          ?'注意: ルールが0本です。この状態を保存すると、スタンドアローン起動では意図した制御ができません。'
+          :'走行開始は一時適用です。本体へ保存すると、最後に保存した設定が上書きされます。';
+      }
+      const yes=$('saveConfirmYes'), no=$('saveConfirmNo'), close=$('saveConfirmClose'), bg=$('saveConfirmBg');
+      let done=false;
+      const finish=v=>{
+        if(done)return;done=true;
+        m.hidden=true;
+        if(yes)yes.onclick=null;if(no)no.onclick=null;if(close)close.onclick=null;if(bg)bg.onclick=null;
+        document.removeEventListener('keydown',onKey);
+        resolve(v);
+      };
+      const onKey=e=>{if(e.key==='Escape')finish(false);};
+      if(yes)yes.onclick=()=>finish(true);
+      if(no)no.onclick=()=>finish(false);
+      if(close)close.onclick=()=>finish(false);
+      if(bg)bg.onclick=()=>finish(false);
+      document.addEventListener('keydown',onKey);
+      m.hidden=false;
+      setTimeout(()=>{if(no)no.focus();},0);
+    });
+  }
+  async function requestSaveConfigToDevice(){
+    const ok=await showSaveConfirmDialog();
+    if(!ok){toast('本体保存をキャンセルしました');return;}
+    await saveConfigToDevice();
+  }
   function saveLocal(){
     const payload=JSON.stringify({rules,params:readParams(),lapBoundaryPattern:cleanLapBoundaryPattern(lapBoundaryPattern),lapPassesPerLap:getLapPassesPerLap(),lapBoundaryOccurrence:{n:getLapBoundaryOccurrenceN(),phase:getLapBoundaryOccurrencePhase()}});
-    localStorage.setItem('mini4ai_rules_v4_15',payload);
+    localStorage.setItem('mini4ai_rules_v4_16',payload);
     // keep one legacy key for smooth downgrade / old UI recovery
     localStorage.setItem('mini4ai_rules_v36',payload);
   }
@@ -8810,7 +8868,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   }
   function loadLocal(){
     try{
-      const raw=localStorage.getItem('mini4ai_rules_v4_15')||localStorage.getItem('mini4ai_rules_v36')||localStorage.getItem('mini4ai_rules_v35')||localStorage.getItem('mini4ai_rules_v3')||'null';
+      const raw=localStorage.getItem('mini4ai_rules_v4_16')||localStorage.getItem('mini4ai_rules_v4_15')||localStorage.getItem('mini4ai_rules_v36')||localStorage.getItem('mini4ai_rules_v35')||localStorage.getItem('mini4ai_rules_v3')||'null';
       const o=JSON.parse(raw);if(!o)return false;
       if(o.params)Object.entries(o.params).forEach(([k,v])=>{
         if(k==='normalDuty'){const valid=[26,51,77,102,128,153,179,204,230,255];if(valid.indexOf(Number(v))<0)v=128;}
@@ -9148,9 +9206,9 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
   $('btnAddRule').onclick=()=>addRule();
   $('btnClearRules').onclick=()=>{rules=[];selectedRule=null;renderRules();saveLocal()};
-  ['btnSaveToDevice','btnSaveToDeviceRun'].forEach(id=>{
+  ['btnSaveToDeviceMenu','btnSaveToDevice'].forEach(id=>{
     const btnSaveDev=$(id);
-    if(btnSaveDev)btnSaveDev.onclick=()=>saveConfigToDevice().catch(e=>toast(e.message||String(e)));
+    if(btnSaveDev)btnSaveDev.onclick=()=>requestSaveConfigToDevice().catch(e=>toast(e.message||String(e)));
   });
   const btnSaveName=$('btnSaveDeviceName');if(btnSaveName)btnSaveName.onclick=()=>saveDeviceName().catch(e=>toast(e.message||String(e)));
   const inpDevName=$('deviceNameInput');if(inpDevName)inpDevName.addEventListener('input',()=>{const n=normalizeDeviceName(inpDevName.value);if(n!==inpDevName.value)inpDevName.value=n;});
@@ -9865,7 +9923,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r15 race console: 表示専用の追加フック。
+  // v4.21-r16 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
