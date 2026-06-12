@@ -24,7 +24,7 @@ Release作成前に以下を確認します。
 ## Release assets
 
 - [ ] `Mini4AI_FirmwareWriter_v3.58-r10_Windows_r11.zip`
-- [ ] `Mini4AI_WebApp_v4.21-r12.zip`
+- [ ] `Mini4AI_WebApp_v4.21-r15.zip`
 - [ ] `source.zip`
 
 ## 公開文
@@ -32,7 +32,7 @@ Release作成前に以下を確認します。
 Release本文には以下を入れます。
 
 ```text
-推奨Webアプリ: v4.21-r12
+推奨Webアプリ: v4.21-r15
 推奨ファームウェア: v3.58-r10
 
 更新内容:

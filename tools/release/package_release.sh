@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 VERSION_FW="v3.58"
-VERSION_WEB="v4.21-r12"
+VERSION_WEB="v4.21-r14"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 RELEASE_DIR="$ROOT/releases"
 mkdir -p "$RELEASE_DIR"

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r13 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r15 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -2909,41 +2909,64 @@ body:not([data-conn="1"]) .conn-indicator:not(.connecting){
    走行・ラップ表示を最大化したいトラックサイド用。
    ============================================================ */
 .header-collapse-toggle{
-  flex:0 0 auto;width:36px;align-self:stretch;
-  border:1px solid var(--line);border-radius:12px;
-  background:rgba(11,16,36,.7);color:var(--ink-soft);
-  font-size:12px;font-weight:900;cursor:pointer;
-  transition:color .15s,border-color .15s,background .15s;
+  flex:0 0 auto;min-width:118px;align-self:stretch;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:2px solid rgba(76,201,255,.52);border-radius:14px;
+  background:linear-gradient(135deg,rgba(76,201,255,.16),rgba(120,160,255,.07));
+  color:var(--ink);
+  font-size:12.5px;font-weight:950;cursor:pointer;letter-spacing:.03em;
+  box-shadow:0 0 16px rgba(76,201,255,.12), inset 0 0 14px rgba(76,201,255,.05);
+  transition:color .15s,border-color .15s,background .15s,transform .15s,box-shadow .15s;
 }
-.header-collapse-toggle:hover{color:var(--ink);border-color:var(--line-hi);background:rgba(120,160,255,.08)}
+.header-collapse-toggle::before{content:"▴";font-size:14px;color:var(--neon-cyan);line-height:1}
+.header-collapse-toggle:hover{
+  color:#061025;border-color:transparent;background:linear-gradient(135deg,var(--neon-cyan),#67e8ff);
+  transform:translateY(-1px);box-shadow:0 0 20px rgba(76,201,255,.28);
+}
+.header-collapse-toggle:hover::before{color:#061025}
 
 body.header-collapsed .header-inner{display:none}
-body.header-collapsed .header{min-height:10px}  /* ::before の状態ラインが帯として残る */
+body.header-collapsed .header{min-height:14px}  /* ::before の状態ラインが帯として残る */
 
 .header-reveal-tab{
-  display:none;position:absolute;top:100%;right:18px;z-index:101;
-  align-items:center;gap:7px;padding:4px 6px 5px;
-  background:linear-gradient(180deg,rgba(8,12,30,.96),rgba(8,12,30,.86));
-  border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;
-  box-shadow:0 8px 22px rgba(0,0,0,.45);
+  display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:160;
+  align-items:center;gap:9px;padding:8px 10px 9px;
+  background:linear-gradient(180deg,rgba(8,12,30,.98),rgba(8,12,30,.92));
+  border:2px solid rgba(76,201,255,.62);border-top:none;border-radius:0 0 18px 18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.52),0 0 24px rgba(76,201,255,.22);
+}
+.header-reveal-tab::before{
+  content:"ヘッダー非表示中";
+  font-size:11px;font-weight:900;color:var(--neon-amber);letter-spacing:.06em;
+  padding:4px 7px;border-radius:999px;border:1px solid rgba(255,194,74,.42);background:rgba(255,194,74,.08);
 }
 body.header-collapsed .header-reveal-tab{display:inline-flex}
 .header-reveal-btn,.header-reveal-stop{
-  border:1px solid var(--line);border-radius:9px;cursor:pointer;
-  padding:4px 12px;font-size:11.5px;font-weight:900;letter-spacing:.03em;
+  border:1px solid var(--line);border-radius:12px;cursor:pointer;
+  padding:9px 18px;font-size:14px;font-weight:950;letter-spacing:.03em;
   font-family:"Noto Sans JP",sans-serif;line-height:1.2;
-  background:rgba(255,255,255,.04);color:var(--ink-dim);
-  transition:color .15s,border-color .15s,background .15s;
+  background:rgba(255,255,255,.04);color:var(--ink);
+  transition:color .15s,border-color .15s,background .15s,transform .15s,box-shadow .15s;
 }
-.header-reveal-btn:hover{color:var(--ink);border-color:rgba(76,201,255,.5);background:rgba(76,201,255,.08)}
+.header-reveal-btn{
+  border-color:rgba(76,201,255,.58);
+  background:linear-gradient(135deg,rgba(76,201,255,.22),rgba(76,201,255,.08));
+  box-shadow:0 0 16px rgba(76,201,255,.18);
+}
+.header-reveal-btn:hover{color:#061025;border-color:transparent;background:linear-gradient(135deg,var(--neon-cyan),#67e8ff);transform:translateY(-1px)}
 .header-reveal-stop{
   display:none;
   background:linear-gradient(135deg,var(--neon-red),#ff2e7e);
-  color:#fff;border-color:transparent;
+  color:#fff;border-color:transparent;box-shadow:0 0 18px rgba(255,91,106,.26);
 }
 /* 折りたたみ中でも走行中は停止が常に手の届く位置にある */
 body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-flex;animation:stopPulse 1.15s ease-in-out infinite}
-@media(max-width:760px){.header-reveal-tab{right:10px}}
+@media(max-width:760px){
+  .header-collapse-toggle{min-width:100%;min-height:44px}
+  .header-reveal-tab{left:10px;right:10px;transform:none;justify-content:center;flex-wrap:wrap}
+  .header-reveal-tab::before{width:100%;text-align:center}
+  .header-reveal-btn,.header-reveal-stop{flex:1;min-width:130px}
+}
 
 
 
@@ -2972,10 +2995,9 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r13 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r15 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
-    <button class="header-btn save" id="btnSaveToDeviceTop" title="現在のパラメータ・ルール・電圧補正・周回認識を本体へ保存します。電源OFF後やスタンドアローン起動で使う設定です。">💾 本体へ保存</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
   </div>
   <div class="header-speed">
@@ -2990,7 +3012,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     <input type="hidden" id="liveSeg" value="0">
   </div>
   <div class="conn-indicator" id="btnConnect"><span class="conn-dot" id="connDot"></span><span id="connText">マシン未接続</span></div>
-  <button type="button" class="header-collapse-toggle" id="headerCollapseToggle" title="ヘッダーを隠す (状態ラインだけ残ります)" aria-expanded="true">▲</button>
+  <button type="button" class="header-collapse-toggle" id="headerCollapseToggle" title="ヘッダーを非表示にして、走行・ラップ表示を広くします" aria-expanded="true">ヘッダー非表示</button>
 </div>
 <div class="header-info-row" id="headerInfoRow">
   <div class="header-info-pill header-info-rule" id="headerRuleSummary" title="設定済みルールの概要"><span class="header-info-label">ルール</span><span class="header-info-text">未設定</span></div>
@@ -3008,7 +3030,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 </div>
 </div>
 <div class="header-reveal-tab" id="headerRevealTab">
-  <button type="button" class="header-reveal-btn" id="headerRevealBtn" title="ヘッダーメニューを表示">▼ メニュー</button>
+  <button type="button" class="header-reveal-btn" id="headerRevealBtn" title="ヘッダーメニューを表示">▼ ヘッダーメニューを表示</button>
   <button type="button" class="header-reveal-stop" id="headerRevealStop" title="走行を停止">■ 停止</button>
 </div>
 </header>
@@ -3050,8 +3072,16 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
           <div class="card-title">走行コントロール</div>
           <div class="muted" style="margin:-4px 0 10px">走行の開始・停止・接続は、画面上部のヘッダーから操作します。走行開始時は現在の設定とルールを一時適用して走行します。</div>
           <div class="header-save-note">
-            <div><b>電源を切った後も使う設定は「本体へ保存」が必要です。</b><br>スタンドアローン起動では、最後に本体へ保存した設定を使います。保存済み設定がある状態で裏返しのまま電源ON → 表向きに戻す → 約3秒後にBLEなしで自動スタートします。</div>
-            <button class="btn warning" id="btnSaveToDeviceRun" title="現在の画面設定を本体へ保存します。スタンドアローン起動で使う設定です。">💾 本体へ保存</button>
+            <div><b>保存は走行操作とは別です。</b><br>走行開始は現在の画面設定を一時適用します。電源を切った後も使う設定、またはスタンドアローン起動で使う設定は、下の「本体へ保存」を押してください。</div>
+          </div>
+          <div class="standalone-save-panel" style="border:1px solid rgba(255,194,74,.45);background:rgba(255,194,74,.08);border-radius:16px;padding:14px;margin:12px 0 16px">
+            <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+              <div style="line-height:1.65">
+                <b>本体へ保存（スタンドアローン用）</b><br>
+                <span class="muted">最後に保存した設定が、電源OFF後・裏返し起動時に使われます。</span>
+              </div>
+              <button class="btn warning" id="btnSaveToDeviceRun" title="現在の画面設定を本体へ保存します。スタンドアローン起動で使う設定です。">💾 本体へ保存</button>
+            </div>
           </div>
           <div class="split">
             <div class="status-tile">
@@ -3138,7 +3168,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r13</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r15</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -9118,7 +9148,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
   $('btnAddRule').onclick=()=>addRule();
   $('btnClearRules').onclick=()=>{rules=[];selectedRule=null;renderRules();saveLocal()};
-  ['btnSaveToDevice','btnSaveToDeviceTop','btnSaveToDeviceRun'].forEach(id=>{
+  ['btnSaveToDevice','btnSaveToDeviceRun'].forEach(id=>{
     const btnSaveDev=$(id);
     if(btnSaveDev)btnSaveDev.onclick=()=>saveConfigToDevice().catch(e=>toast(e.message||String(e)));
   });
@@ -9835,7 +9865,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r13 race console: 表示専用の追加フック。
+  // v4.21-r15 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
@@ -9870,7 +9900,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       }
       flashOnChange('lapLatestView');
       flashOnChange('segView');
-      // ヘッダー折りたたみ: 状態ラインだけ残して隠す。設定は保存される。
+      // ヘッダー折りたたみ: 状態ラインと大きな復帰タブを残して隠す。設定は保存される。
       function setHeaderCollapsed(on,persist=false){
         document.body.classList.toggle('header-collapsed',!!on);
         const t=$('headerCollapseToggle');
