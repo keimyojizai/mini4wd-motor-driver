@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 VERSION_FW="v3.58"
-VERSION_WEB="v4.21-r10"
+VERSION_WEB="v4.21-r12"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 RELEASE_DIR="$ROOT/releases"
 mkdir -p "$RELEASE_DIR"
@@ -21,7 +21,7 @@ make_zip() {
   echo "Created $RELEASE_DIR/$name"
 }
 
-make_zip "Mini4AI_FirmwareWriter_${VERSION_FW}_Windows_r10.zip" \
+make_zip "Mini4AI_FirmwareWriter_${VERSION_FW}_Windows_r11.zip" \
   "RUN_ME_FIRST_Flash_Mini4AI_Windows.bat" \
   "Flash_Mini4AI_Windows.bat" \
   "Flash_Mini4AI_Windows.cmd" \

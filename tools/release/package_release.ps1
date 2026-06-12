@@ -1,6 +1,6 @@
 param(
   [string]$VersionFw = "v3.58",
-  [string]$VersionWeb = "v4.21-r10"
+  [string]$VersionWeb = "v4.21-r12"
 )
 
 $ErrorActionPreference = "Stop"
@@ -26,7 +26,7 @@ function New-Zip($Name, $Paths) {
   Write-Host "Created $zip"
 }
 
-New-Zip "Mini4AI_FirmwareWriter_${VersionFw}_Windows_r10.zip" @(
+New-Zip "Mini4AI_FirmwareWriter_${VersionFw}_Windows_r11.zip" @(
   "RUN_ME_FIRST_Flash_Mini4AI_Windows.bat",
   "Flash_Mini4AI_Windows.bat",
   "Flash_Mini4AI_Windows.cmd",

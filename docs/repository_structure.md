@@ -10,6 +10,7 @@ mini4wd-motor-driver/
 │  └─ index.html
 ├─ docs/
 │  ├─ firmware_update.md
+│  ├─ standalone_mode.md
 │  ├─ flash_arduino_ide.md
 │  ├─ recovery.md
 │  ├─ troubleshooting.md
