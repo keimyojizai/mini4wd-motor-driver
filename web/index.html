@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r12 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r13 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -149,6 +149,18 @@ body::after{
   background:linear-gradient(135deg,var(--neon-red),#ff2e7e);color:#fff;border-color:transparent;
   box-shadow:0 4px 18px rgba(255,91,106,0.45);min-width:150px;text-align:center;
 }
+.header-btn.save{
+  background:linear-gradient(135deg,var(--neon-amber),#ff9f1c);color:#2a1500;border-color:transparent;
+  box-shadow:0 4px 18px rgba(255,194,74,0.38);min-width:155px;text-align:center;
+}
+.header-save-note{
+  border:1px solid rgba(255,194,74,.45);border-radius:14px;
+  background:rgba(255,194,74,.075);padding:12px 14px;margin:0 0 14px;
+  display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  color:var(--ink-soft);line-height:1.65;
+}
+.header-save-note b{color:var(--ink)}
+.header-save-note .btn{flex-shrink:0}
 
 .conn-indicator{
   display:inline-flex;align-items:center;gap:9px;
@@ -313,7 +325,7 @@ body::after{
 @media(max-width:1280px){.header-live-label{display:none}.header-live-seg select{min-width:112px}}
 @media(max-width:1100px){
   .header-btn{padding:14px 22px;font-size:16px}
-  .header-btn.success,.header-btn.danger{min-width:120px}
+  .header-btn.success,.header-btn.danger,.header-btn.save{min-width:120px}
 }
 @media(max-width:760px){
   .header-inner{padding:10px 12px}
@@ -2960,9 +2972,10 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r12 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r13 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
+    <button class="header-btn save" id="btnSaveToDeviceTop" title="現在のパラメータ・ルール・電圧補正・周回認識を本体へ保存します。電源OFF後やスタンドアローン起動で使う設定です。">💾 本体へ保存</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
   </div>
   <div class="header-speed">
@@ -3035,7 +3048,11 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         <!-- 走行コントロール (旧 走行・ログ タブから移動) -->
         <div class="card status-card" data-workspace-card="run" data-workspace-title="走行・ラップ">
           <div class="card-title">走行コントロール</div>
-          <div class="muted" style="margin:-4px 0 14px">走行の開始・停止・接続は、画面上部のヘッダーから操作します。走行開始時は現在の設定とルールを一時適用して走行します。本体に残してスタンドアローン起動で使う設定は、「本体へ保存」ボタンを押した時だけ更新されます。保存済み設定がある状態で裏返しのまま電源ON → 表向きに戻す → 約3秒後にBLEなしで自動スタートします。</div>
+          <div class="muted" style="margin:-4px 0 10px">走行の開始・停止・接続は、画面上部のヘッダーから操作します。走行開始時は現在の設定とルールを一時適用して走行します。</div>
+          <div class="header-save-note">
+            <div><b>電源を切った後も使う設定は「本体へ保存」が必要です。</b><br>スタンドアローン起動では、最後に本体へ保存した設定を使います。保存済み設定がある状態で裏返しのまま電源ON → 表向きに戻す → 約3秒後にBLEなしで自動スタートします。</div>
+            <button class="btn warning" id="btnSaveToDeviceRun" title="現在の画面設定を本体へ保存します。スタンドアローン起動で使う設定です。">💾 本体へ保存</button>
+          </div>
           <div class="split">
             <div class="status-tile">
               <div class="tiny">Status</div>
@@ -3121,7 +3138,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r12</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r13</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -3288,7 +3305,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
             </label>
             <span class="spacer"></span>
             <button class="btn-hint" type="button" data-hint="priority" style="margin-right:6px">💡 優先度とブロックの仕組み</button>
-            <button class="btn warning" id="btnSaveToDevice" title="現在のパラメータ・ルール・電圧補正を本体の不揮発メモリへ保存します。スタンドアローン起動で使われる設定です。">💾 本体へ保存</button>
+            <button class="btn warning" id="btnSaveToDevice" title="現在のパラメータ・ルール・電圧補正・周回認識を本体の不揮発メモリへ保存します。スタンドアローン起動で使われる設定です。">💾 本体へ保存（スタンドアローン用）</button>
             <button class="btn btn-secondary" id="btnExport">⇧ JSON保存</button>
             <button class="btn btn-secondary" id="btnImport">⇩ JSON読込</button>
             <button class="btn btn-secondary" id="btnQrShow">⌗ QR表示</button>
@@ -9101,7 +9118,10 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
   $('btnAddRule').onclick=()=>addRule();
   $('btnClearRules').onclick=()=>{rules=[];selectedRule=null;renderRules();saveLocal()};
-  const btnSaveDev=$('btnSaveToDevice');if(btnSaveDev)btnSaveDev.onclick=()=>saveConfigToDevice().catch(e=>toast(e.message||String(e)));
+  ['btnSaveToDevice','btnSaveToDeviceTop','btnSaveToDeviceRun'].forEach(id=>{
+    const btnSaveDev=$(id);
+    if(btnSaveDev)btnSaveDev.onclick=()=>saveConfigToDevice().catch(e=>toast(e.message||String(e)));
+  });
   const btnSaveName=$('btnSaveDeviceName');if(btnSaveName)btnSaveName.onclick=()=>saveDeviceName().catch(e=>toast(e.message||String(e)));
   const inpDevName=$('deviceNameInput');if(inpDevName)inpDevName.addEventListener('input',()=>{const n=normalizeDeviceName(inpDevName.value);if(n!==inpDevName.value)inpDevName.value=n;});
   $('btnExport').onclick=exportJson;
@@ -9815,7 +9835,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r12 race console: 表示専用の追加フック。
+  // v4.21-r13 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
