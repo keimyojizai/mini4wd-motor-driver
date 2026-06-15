@@ -14,7 +14,7 @@
 1. Releaseから `Mini4AI_FirmwareWriter_v3.58-r10_Windows_r11.zip` をダウンロードします。
 2. ZIPを右クリックして「すべて展開」します。
 3. XIAO MG24 SenseをUSBでPCに接続します。
-4. 展開したフォルダ直下の `RUN_ME_FIRST_Flash_Mini4AI_Windows.bat` をダブルクリックします。
+4. 展開したフォルダ直下の `START_HERE_Flash_Mini4AI.cmd` をダブルクリックします。
 5. 初期BLEデバイス名を聞かれたら入力します。空欄なら `Mini4AI` になります。
 6. 画面の指示に従います。
 
@@ -77,6 +77,6 @@ SiliconLabs:silabs:xiao_mg24:protocol_stack=ble_arduino
 
 ## Windowsでbatを押しても何も起きない場合
 
-ZIP内から直接実行している可能性があります。Windows用書き込みツールは、必ずZIPを右クリックして「すべて展開」してから、展開先の `RUN_ME_FIRST_Flash_Mini4AI_Windows.bat` を実行してください。
+ZIP内から直接実行している可能性があります。Windows用書き込みツールは、必ずZIPを右クリックして「すべて展開」してから、展開先の `START_HERE_Flash_Mini4AI.cmd` を実行してください。
 
 実行後は `Mini4AI_flash_log.txt` が作成されます。失敗時はこのログを確認してください。

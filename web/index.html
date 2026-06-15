@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r16 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r33 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -2146,6 +2146,45 @@ td.event-vbat,td.load-sag{white-space:nowrap}
 .sag-cell.sag-high{color:#fff;background:rgba(255,91,106,.15);border-color:rgba(255,91,106,.45)}
 
 
+
+
+/* ============================================================
+   Guided setup wizard: 情報量を減らして、初見ユーザーを順番に誘導する。
+   ============================================================ */
+.guide-card{border-color:rgba(76,201,255,.42)!important;background:radial-gradient(900px 260px at 0% 0%,rgba(76,201,255,.12),transparent 60%),linear-gradient(180deg,rgba(12,18,44,.92),rgba(9,13,30,.88))}
+.guide-hero{display:grid;grid-template-columns:minmax(260px,1.2fr) minmax(260px,.8fr);gap:16px;align-items:stretch;margin:8px 0 14px}
+.guide-hero-main,.guide-hero-side{border:1px solid rgba(120,160,255,.24);border-radius:18px;padding:16px 18px;background:rgba(6,10,28,.42);box-shadow:inset 0 0 22px rgba(76,201,255,.035)}
+.guide-hero-main h3{font-size:20px;line-height:1.45;margin-bottom:8px;letter-spacing:.02em}
+.guide-hero-main p,.guide-hero-side p{color:var(--ink-dim);font-weight:750;line-height:1.75;font-size:13.5px}
+.guide-mode-badge{display:inline-flex;align-items:center;gap:7px;margin-bottom:10px;padding:6px 10px;border-radius:999px;border:1px solid rgba(76,201,255,.36);background:rgba(76,201,255,.09);color:var(--neon-cyan);font-size:12px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.guide-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
+.guide-step{border:1px solid rgba(120,160,255,.22);border-radius:16px;padding:12px;background:rgba(4,8,24,.40);min-height:124px;position:relative;overflow:hidden}
+.guide-step::before{content:attr(data-step);position:absolute;right:12px;top:10px;font-family:"JetBrains Mono",monospace;font-weight:950;font-size:26px;color:rgba(76,201,255,.16)}
+.guide-step-title{font-size:15px;font-weight:950;margin-bottom:6px;color:var(--ink)}
+.guide-step-text{font-size:12.8px;font-weight:720;line-height:1.65;color:var(--ink-dim);padding-right:18px}
+.guide-step.warn{border-color:rgba(255,194,74,.42);background:rgba(255,194,74,.055)}
+.guide-step.warn::before{color:rgba(255,194,74,.20)}
+.guide-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 6px}
+.guide-actions .btn{min-height:42px}
+.guide-question-panel{margin-top:14px;border:1px solid rgba(255,194,74,.32);border-radius:18px;padding:16px;background:linear-gradient(135deg,rgba(255,194,74,.075),rgba(76,201,255,.045))}
+.guide-question-title{font-size:17px;font-weight:950;margin-bottom:8px;color:#fff3c6}
+.guide-question-text{font-size:13.5px;line-height:1.7;color:var(--ink-dim);font-weight:750;margin-bottom:12px}
+.guide-result{margin-top:12px;border:1px solid rgba(76,201,255,.26);border-radius:15px;padding:12px 14px;background:rgba(4,8,24,.38);color:var(--ink);font-size:13.5px;font-weight:750;line-height:1.7;white-space:pre-wrap}
+.guide-result b{color:var(--neon-cyan)}
+.guide-mini-list{display:grid;gap:7px;margin-top:8px;color:var(--ink-dim);font-size:13px;font-weight:750;line-height:1.65}
+.guide-mini-list span{display:block;padding-left:1.1em;text-indent:-1.1em}
+.guide-principle{display:grid;grid-template-columns:minmax(220px,.9fr) minmax(260px,1.1fr);gap:12px;margin:12px 0 14px;border:1px solid rgba(255,194,74,.42);border-radius:18px;padding:14px 16px;background:linear-gradient(135deg,rgba(255,194,74,.08),rgba(255,93,209,.045))}
+.guide-principle-title{font-size:15px;font-weight:950;color:#fff3c6;margin-bottom:7px}
+.guide-principle p{color:var(--ink-dim);font-size:13.2px;font-weight:760;line-height:1.7;margin:0}
+.guide-principle b{color:#fff}
+.guide-principle .bad{color:var(--neon-red);font-weight:950}
+.guide-principle .good{color:var(--neon-green);font-weight:950}
+@media(max-width:900px){.guide-principle{grid-template-columns:1fr}}
+.workspace-menu-guide-btn{width:100%;border:1px solid rgba(76,201,255,.55);border-radius:13px;padding:12px 13px;margin:0 0 12px;background:linear-gradient(135deg,rgba(76,201,255,.22),rgba(255,93,209,.10));color:var(--ink);font-weight:950;font-size:14px;letter-spacing:.03em;cursor:pointer;text-align:left;box-shadow:0 0 18px rgba(76,201,255,.13),inset 0 0 18px rgba(76,201,255,.045)}
+.workspace-menu-guide-btn small{float:right;color:var(--neon-cyan);font-family:"JetBrains Mono",monospace;font-size:11px;margin-top:2px}
+.workspace-menu-guide-btn.active{border-color:rgba(76,201,255,.95);box-shadow:0 0 22px rgba(76,201,255,.26),inset 0 0 20px rgba(76,201,255,.08)}
+@media(max-width:1100px){.guide-hero{grid-template-columns:1fr}.guide-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.guide-steps{grid-template-columns:1fr}.guide-actions .btn{width:100%}}
 /* ===== トースト ===== */
 .toast{position:fixed;right:18px;bottom:18px;z-index:200;display:grid;gap:8px}
 .msg{
@@ -2986,6 +3025,145 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
 
 
+
+/* ---- Guided setup full-screen wizard v4.21-r33 ---- */
+.guide-entry-card{min-height:0}
+.guide-entry-panel{border:1px solid rgba(76,201,255,.24);border-radius:18px;background:linear-gradient(135deg,rgba(76,201,255,.10),rgba(180,139,255,.05));padding:20px;display:grid;gap:12px;max-width:760px}
+.guide-entry-panel h3{margin:0;font-size:22px;color:var(--ink)}
+.guide-entry-panel p{margin:0;color:var(--ink-soft);line-height:1.75}
+.guide-wizard-screen{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 15% 0%,rgba(76,201,255,.16),transparent 35%),linear-gradient(180deg,#061025,#050914 70%);display:none;padding:18px;overflow:auto}
+.guide-wizard-screen.open{display:block}
+.guide-wizard-shell{max-width:860px;min-height:calc(100vh - 36px);margin:0 auto;border:1px solid rgba(76,201,255,.28);border-radius:24px;background:rgba(8,15,31,.94);box-shadow:0 18px 60px rgba(0,0,0,.42),0 0 0 1px rgba(255,255,255,.04) inset;padding:22px;display:grid;grid-template-rows:auto auto auto 1fr auto;gap:14px}
+.guide-wizard-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border-bottom:1px solid rgba(120,160,255,.15);padding-bottom:12px}
+.guide-wizard-topbar h2{margin:6px 0 0;font-size:28px;letter-spacing:.03em}
+.guide-wizard-progress{height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.guide-wizard-progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-green));box-shadow:0 0 14px rgba(76,201,255,.35);transition:width .18s ease}
+.guide-wizard-step-label{font:800 12px/1 "JetBrains Mono",monospace;letter-spacing:.12em;color:var(--ink-soft);text-transform:uppercase}
+.guide-wizard-body{display:grid;align-content:center;gap:18px;padding:12px 0}
+.guide-wizard-body h3{font-size:30px;line-height:1.25;margin:0;color:var(--ink)}
+.guide-wizard-body p{font-size:16px;line-height:1.85;color:var(--ink-soft);margin:0;max-width:780px}
+.guide-wizard-options{display:grid;gap:12px;margin-top:4px}
+.guide-wizard-option{width:100%;text-align:left;border:1px solid rgba(120,160,255,.20);border-radius:18px;background:rgba(255,255,255,.045);color:var(--ink);padding:16px 18px;cursor:pointer;display:grid;gap:5px;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s}
+.guide-wizard-option:hover{transform:translateY(-1px);border-color:rgba(76,201,255,.48);background:rgba(76,201,255,.08)}
+.guide-wizard-option.selected{border-color:rgba(46,230,168,.68);background:rgba(46,230,168,.10);box-shadow:0 0 18px rgba(46,230,168,.12)}
+.guide-wizard-option b{font-size:17px}
+.guide-wizard-option span{font-size:13px;color:var(--ink-soft);line-height:1.55}
+.guide-wizard-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.guide-wizard-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;max-width:440px}
+.guide-wizard-input-row input{font-size:28px;font-weight:900;text-align:right;border-radius:18px;padding:14px 18px;background:rgba(255,255,255,.06);border:1px solid rgba(120,160,255,.22);color:var(--ink)}
+.guide-wizard-input-row .unit{font:900 18px/1 "JetBrains Mono",monospace;color:var(--ink-soft)}
+.guide-wizard-note{border:1px solid rgba(255,194,74,.36);border-radius:18px;background:rgba(255,194,74,.08);padding:14px 16px;color:#fff3ce;line-height:1.75}
+.guide-wizard-good{border:1px solid rgba(46,230,168,.36);border-radius:18px;background:rgba(46,230,168,.08);padding:14px 16px;color:#dcffef;line-height:1.75}
+.guide-wizard-summary{border:1px solid rgba(76,201,255,.28);border-radius:20px;background:rgba(76,201,255,.07);padding:18px;display:grid;gap:10px;line-height:1.75}
+.guide-wizard-summary b{color:#eafcff}
+.guide-wizard-natural{font-size:20px;line-height:1.75;color:#fff;font-weight:800}
+.guide-wizard-footer{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(120,160,255,.15);padding-top:14px}
+.guide-wizard-footer .btn{min-width:140px}
+.guide-wizard-footer .btn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:760px){.guide-wizard-screen{padding:10px}.guide-wizard-shell{min-height:calc(100vh - 20px);border-radius:18px;padding:16px}.guide-wizard-body h3{font-size:24px}.guide-wizard-two{grid-template-columns:1fr}.guide-wizard-topbar h2{font-size:23px}.guide-wizard-footer .btn{min-width:0;flex:1}}
+
+
+/* ===== Guided setup r21 refinements ===== */
+.guide-wizard-shell{
+  max-width:980px;
+  background:
+    radial-gradient(900px 300px at 0% 0%,rgba(76,201,255,.10),transparent 60%),
+    radial-gradient(680px 280px at 100% 0%,rgba(255,93,209,.08),transparent 62%),
+    linear-gradient(180deg,rgba(8,15,36,.96),rgba(4,8,24,.97));
+}
+.guide-wizard-mini-summary{
+  border:1px solid rgba(76,201,255,.24);
+  border-radius:16px;
+  background:rgba(4,8,24,.48);
+  padding:10px 12px;
+  color:var(--ink-dim);
+  font-size:13px;
+  line-height:1.65;
+  font-weight:800;
+}
+.guide-wizard-mini-summary b{color:var(--neon-cyan)}
+
+.guide-advice-banner{border:1px solid rgba(255,194,74,.55);border-radius:16px;padding:12px 14px;margin:0 0 14px;background:linear-gradient(135deg,rgba(255,194,74,.14),rgba(255,91,106,.08));box-shadow:0 0 28px rgba(255,194,74,.12);color:#fff6d6}
+.guide-advice-banner b{display:block;color:var(--neon-amber);font-size:14px;margin-bottom:4px}
+.guide-advice-banner p{margin:0;color:#fff6d6;font-size:13.5px;font-weight:800;line-height:1.65}
+.guide-advice-banner .btn{margin-top:10px;min-height:38px}
+.guide-rule-stack{display:grid;gap:8px;margin-top:10px}
+.guide-rule-item{border:1px solid rgba(76,201,255,.26);border-radius:14px;padding:10px 12px;background:rgba(4,8,24,.38);font-size:13.5px;font-weight:800;line-height:1.65;color:var(--ink)}
+.guide-rule-item b{color:var(--neon-cyan)}
+.guide-rule-item.current{border-color:rgba(255,194,74,.55);background:rgba(255,194,74,.08)}
+.guide-rule-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.guide-rule-actions .btn{min-height:34px;padding:8px 10px;font-size:12px}
+.guide-rule-manage-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 6px;font-weight:950;color:var(--ink)}
+.guide-rule-manage-hint{font-size:13px;line-height:1.65;color:var(--ink-soft);font-weight:760;margin:4px 0 8px}
+.guide-rule-count{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(76,201,255,.34);border-radius:999px;padding:4px 9px;margin-left:6px;background:rgba(76,201,255,.08);font-size:12px;font-weight:950;color:var(--neon-cyan)}
+.guide-speed-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}
+.guide-speed-option{text-align:center;justify-content:center;min-height:70px}
+.guide-speed-option b{font:900 22px/1 "JetBrains Mono",monospace}
+.guide-conn-card{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(120,160,255,.24);border-radius:18px;background:rgba(255,255,255,.045);padding:14px 16px;margin:8px 0 12px}
+.guide-conn-left{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--ink)}
+.guide-conn-dot{width:13px;height:13px;border-radius:50%;background:#6a7895;box-shadow:0 0 0 4px rgba(255,255,255,.04)}
+.guide-conn-card.connected{border-color:rgba(46,230,168,.5);background:rgba(46,230,168,.08)}
+.guide-conn-card.connected .guide-conn-dot{background:var(--neon-green);box-shadow:0 0 14px var(--neon-green)}
+.guide-conn-card.connecting{border-color:rgba(76,201,255,.55);background:rgba(76,201,255,.08)}
+.guide-conn-card.connecting .guide-conn-dot{background:var(--neon-cyan);box-shadow:0 0 14px var(--neon-cyan)}
+.guide-conn-status{font-size:15px}
+.guide-conn-caption{font-size:12px;color:var(--ink-soft);font-weight:800}
+@media(max-width:760px){.guide-speed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.guide-conn-card{align-items:flex-start;flex-direction:column}}
+
+.guide-seg-order{
+  border:1px solid rgba(76,201,255,.34);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(76,201,255,.13),rgba(46,230,168,.06));
+  padding:16px 18px;
+  box-shadow:0 0 26px rgba(76,201,255,.11);
+  display:grid;
+  gap:10px;
+}
+.guide-seg-order-title{font-size:15px;color:var(--neon-cyan);font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.guide-seg-order-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.guide-seg-order-empty{color:var(--ink-soft);font-weight:800;font-size:14px}
+.guide-arrow{font-family:"JetBrains Mono",monospace;color:var(--ink-soft);font-weight:950}
+.guide-seg-option{grid-template-columns:auto 1fr;align-items:center;gap:12px}
+.guide-seg-option b{font-size:16px}
+.guide-seg-option .seg-pip{min-width:80px;justify-content:center}
+.guide-param-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,420px));gap:14px;align-items:stretch}
+.guide-param-card{
+  border:1px solid rgba(120,160,255,.22);
+  border-radius:18px;
+  background:rgba(255,255,255,.045);
+  padding:14px 16px;
+  display:grid;
+  gap:10px;
+  max-width:460px;
+}
+.guide-param-label{font-size:13px;color:var(--ink-dim);font-weight:950;line-height:1.5}
+.guide-param-input{display:flex;align-items:baseline;gap:10px}
+.guide-param-input input{
+  width:min(190px,100%);
+  font-size:30px;
+  font-weight:950;
+  text-align:right;
+  border-radius:18px;
+  padding:13px 16px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(120,160,255,.28);
+  color:var(--ink);
+  font-family:"JetBrains Mono",monospace;
+}
+.guide-param-input .unit{
+  font:950 18px/1 "JetBrains Mono",monospace;
+  color:var(--ink);
+  white-space:nowrap;
+}
+.guide-action-panel{display:grid;gap:14px}
+.guide-action-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.guide-action-buttons .btn{min-height:58px;font-size:16px}
+.guide-action-hint{font-size:13.5px;color:var(--ink-dim);font-weight:800;line-height:1.7}
+.guide-improve-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.guide-improve-actions .btn{min-height:44px}
+.guide-wizard-option.selected{border-color:rgba(76,201,255,.80);background:linear-gradient(135deg,rgba(76,201,255,.14),rgba(46,230,168,.10));box-shadow:0 0 22px rgba(76,201,255,.16)}
+@media(max-width:760px){.guide-param-grid,.guide-action-buttons{grid-template-columns:1fr}.guide-param-card{max-width:none}.guide-param-input input{width:170px}}
+
 /* ---- Firmware update guide card ---- */
 .firmware-update-card .fw-version-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 14px}
 .firmware-update-card .fw-version-box{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035);padding:12px}
@@ -3011,7 +3189,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r16 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r33 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
@@ -3051,12 +3229,34 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 </div>
 </header>
 
+<div class="guide-wizard-screen" id="guideWizardScreen" aria-hidden="true">
+  <div class="guide-wizard-shell">
+    <div class="guide-wizard-topbar">
+      <div>
+        <div class="guide-mode-badge">GUIDED SETUP</div>
+        <h2 id="guideWizardTitle">かんたん設定</h2>
+      </div>
+      <button type="button" class="btn btn-secondary" id="guideWizardClose">終了</button>
+    </div>
+    <div class="guide-wizard-progress"><div id="guideWizardProgressBar"></div></div>
+    <div class="guide-wizard-step-label" id="guideWizardStepLabel">Step 1</div>
+    <div class="guide-wizard-mini-summary" id="guideWizardMiniSummary"></div>
+    <div class="guide-wizard-body" id="guideWizardBody"></div>
+    <div class="guide-wizard-footer">
+      <button type="button" class="btn btn-secondary" id="guideWizardBack">戻る</button>
+      <button type="button" class="btn success" id="guideWizardNext">次へ</button>
+    </div>
+  </div>
+</div>
+
+
 <main class="main">
   <div class="workspace-shell" id="workspaceShell">
     <aside class="workspace-sidebar" id="workspaceSidebar">
       <div class="workspace-sidebar-title"><span>Workspace</span><span>表示切替</span></div>
+      <button type="button" class="workspace-menu-guide-btn active" data-workspace-view="guide">かんたん設定 <small>GUIDE</small></button>
       <div class="workspace-menu" id="workspaceMenu">
-        <button type="button" class="workspace-menu-btn active" data-workspace-view="run">走行・ラップ <small>RUN</small></button>
+        <button type="button" class="workspace-menu-btn" data-workspace-view="run">走行・ラップ <small>RUN</small></button>
         <button type="button" class="workspace-menu-btn" data-workspace-view="tune">チューン <small>TUNE</small></button>
         <button type="button" class="workspace-menu-btn" data-workspace-view="logs">停止後ログ <small>LOG</small></button>
         <button type="button" class="workspace-menu-btn" data-workspace-view="rules">ルール設計 <small>RULE</small></button>
@@ -3085,6 +3285,17 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   <!-- ====== 設計 (走行・ログを統合 v3.12) ====== -->
   <section class="tab-content active" id="tab-design">
     <div>
+        <!-- かんたん設定ウィザード -->
+        <div class="card guide-card guide-entry-card" id="guideCard" data-workspace-card="guide" data-workspace-title="かんたん設定">
+          <div class="card-title">かんたん設定 <span class="badge-count" style="text-transform:none;letter-spacing:.02em">1画面1判断</span></div>
+          <div class="guide-entry-panel">
+            <div class="guide-mode-badge">GUIDED SETUP</div>
+            <h3>1つずつ質問に答えて、ルールを作ります。</h3>
+            <p>通常画面の情報量を減らし、目的位置、手前の起点、発動回数、待機時間、アクションを順番に決めます。</p>
+            <button type="button" class="btn success btn-xl" id="guideStartWizard">かんたん設定を開始</button>
+          </div>
+        </div>
+
         <!-- 走行コントロール (旧 走行・ログ タブから移動) -->
         <div class="card status-card" data-workspace-card="run" data-workspace-title="走行・ラップ">
           <div class="card-title">走行コントロール</div>
@@ -3136,8 +3347,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
                     <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>1周として数える区切り通過数</label><span class="seg-pip seg-system">LAP</span></div><div class="field-sub">Passes per lap</div><select id="lapPassesPerLap"><option value="1">1回</option><option value="2">2回</option><option value="3" selected>3回</option><option value="5">5回</option></select><div class="field-hint">採用した区切りをこの回数通過したら1周とします。</div></div>
                     <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>同じ検知の出現回数</label><span class="seg-pip seg-system">FILTER</span></div><div class="field-sub">Occurrence denominator</div><select id="lapBoundaryOccurrenceN"><option value="1">毎回</option><option value="2">2回</option><option value="3">3回</option><option value="4">4回</option><option value="5">5回</option><option value="6">6回</option><option value="8">8回</option><option value="10">10回</option><option value="12">12回</option></select><div class="field-hint">1レーン内に似た検知が複数出る場合の分母です。</div></div>
                     <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>採用する検知</label><span class="seg-pip seg-system">PHASE</span></div><div class="field-sub">Occurrence phase</div><select id="lapBoundaryOccurrencePhase"><option value="1">毎回</option></select><div class="field-hint">同じ検知が複数出るうち、何回目を周回区切りとして使うか。</div></div>
-                    <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>左/右カーブ継続判定</label><span class="seg-pip seg-left"><span class="ic">左</span>左継続</span><span class="seg-pip seg-right"><span class="ic">右</span>右継続</span></div><div class="field-sub">Curve long · ms</div><input type="number" id="lapCurveLongMs" min="30" max="1200" step="5" value="180"><div class="field-hint">このms以上続くと「左継続/右継続」として扱います。</div></div>
-                    <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>直線継続判定</label><span class="seg-pip seg-straight-hold"><span class="ic">直継続</span>直線継続</span></div><div class="field-sub">Straight hold · ms</div><input type="number" id="lapStraightHoldMs" min="20" max="2000" step="5" value="250"><div class="field-hint">このms以上続くと「直線継続」として扱います。</div></div>
+                    <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>左/右カーブ継続判定</label><span class="seg-pip seg-left"><span class="ic">左</span>左継続</span><span class="seg-pip seg-right"><span class="ic">右</span>右継続</span></div><div class="field-sub">Curve long · ms</div><input type="number" id="lapCurveLongMs" min="30" max="1200" step="5" value="100"><div class="field-hint">100msなら90°/180°の両方、200msなら180°寄りに絞れます。</div></div>
+                    <div class="field field--nl lap-timing-field"><div class="field-label-row"><label>直線継続判定</label><span class="seg-pip seg-straight-hold"><span class="ic">直継続</span>直線継続</span></div><div class="field-sub">Straight hold · ms</div><input type="number" id="lapStraightHoldMs" min="20" max="2000" step="5" value="100"><div class="field-hint">このms以上続くと「直線継続」として扱います。</div></div>
                   </div>
                   <div class="lap-boundary-timing-help">例: 3レーンで1周なら「1周として数える区切り通過数 = 3回」。1レーン内で同じ候補が2回出て2回目だけを境界にしたい場合は「出現回数 = 2回、採用する検知 = 2回目」。</div>
                 </div>
@@ -3174,7 +3385,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r16</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r33</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -3404,12 +3615,15 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
       <div class="param-section-head">⏳ 長いカーブの判定（継続 HOLD）</div>
       <div class="form-grid">
-        <div class="field field--nl"><div class="field-label-row"><label>カーブがこの時間続いたら「長いカーブ（継続）」</label><span class="seg-pip seg-hold-l"><span class="ic">左継続</span>左C継続</span><span class="seg-pip seg-hold-r"><span class="ic">右継続</span>右C継続</span></div><div class="field-sub">Curve Long Min · ms</div><input type="number" id="curveLong" min="30" max="1200" value="180"><div class="field-hint">短い90°カーブと長い180°カーブを切り分けます。</div></div>
+        <div class="field field--nl"><div class="field-label-row"><label>カーブ継続判定時間（全体ログ用）</label><span class="seg-pip seg-hold-l"><span class="ic">左継続</span>左C継続</span><span class="seg-pip seg-hold-r"><span class="ic">右継続</span>右C継続</span></div><div class="field-sub">Curve Long Min · ms</div><input type="number" id="curveLong" min="30" max="1200" value="100"><div class="field-hint">リアルタイムログに出る「左/右カーブ継続」の標準値です。初期値は100msです。</div></div>
+        <div class="field field--nl"><div class="field-label-row"><label>90度カーブ継続の目安</label><span class="seg-pip seg-hold-l"><span class="ic">90</span>90°</span></div><div class="field-sub">Curve Hold 90° · ms</div><input type="number" id="curveHold90Ms" min="30" max="1200" value="100"><div class="field-hint">かんたん設定の「90度カーブ以上」で使う値です。初期値は100msです。</div></div>
+        <div class="field field--nl"><div class="field-label-row"><label>180度カーブ継続の目安</label><span class="seg-pip seg-hold-r"><span class="ic">180</span>180°</span></div><div class="field-sub">Curve Hold 180° · ms</div><input type="number" id="curveHold180Ms" min="30" max="1200" value="200"><div class="field-hint">かんたん設定の「180度カーブ以上」で使う値です。90度カーブを避けたい場合の基準です。</div></div>
+        <div class="field field--nl"><div class="field-label-row"><label>それ以上の長いカーブ継続の目安</label><span class="seg-pip seg-peak"><span class="ic">長</span>長いC</span></div><div class="field-sub">Curve Hold Long · ms</div><input type="number" id="curveHoldLongMs" min="30" max="1200" value="300"><div class="field-hint">180度より長く続くカーブだけを狙いたい場合に使います。速度に合わせて調整してください。</div></div>
       </div>
 
       <div class="param-section-head">⏱ 直線が続いたときの判定 <span class="seg-pip seg-straight-hold"><span class="ic">直継続</span>直線継続</span></div>
       <div class="form-grid">
-        <div class="field field--nl"><div class="field-label-row"><label>直線がこの時間続いたら「直線継続」</label><span class="seg-pip seg-straight-hold"><span class="ic">直継続</span>直線継続</span></div><div class="field-sub">Straight Hold · ms</div><input type="number" id="straightHold" min="20" max="2000" value="250"><div class="field-hint">長い直線を一度だけ通知します。</div></div>
+        <div class="field field--nl"><div class="field-label-row"><label>直線がこの時間続いたら「直線継続」</label><span class="seg-pip seg-straight-hold"><span class="ic">直継続</span>直線継続</span></div><div class="field-sub">Straight Hold · ms</div><input type="number" id="straightHold" min="20" max="2000" value="100"><div class="field-hint">長い直線を一度だけ通知します。</div></div>
       </div>
 
       <div class="param-section-head">🔁 共通制御</div>
@@ -3807,6 +4021,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(ind)ind.title=on?'クリックで切断':'クリックで接続';
     if(!on) setTelemetryEmpty();
     if(typeof refreshConnToggle==='function')refreshConnToggle();
+    if(typeof refreshGuideConnectionStatus==='function')refreshGuideConnectionStatus();
   }
   function setConnecting(on,label='BLE接続中…'){
     const ind=$('btnConnect');
@@ -3821,6 +4036,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       ind.title='クリックで接続';
     }
     if(typeof refreshConnToggle==='function')refreshConnToggle();
+    if(typeof refreshGuideConnectionStatus==='function')refreshGuideConnectionStatus();
   }
   function chip(seg,removable=false,onRemove=null){
     const c=document.createElement('span');c.className='chip';
@@ -3959,8 +4175,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(pat.length===0) return '<span class="rs-empty">(パターン未設定)</span>';
 
     // 共通(認識調整)タイミング値をフォールバック値として読み込む
-    const gSH = Number(($('straightHold')||{value:250}).value)||250;
-    const gCL = Number(($('curveLong')||{value:180}).value)||180;
+    const gSH = Number(($('straightHold')||{value:100}).value)||100;
+    const gCL = Number(($('curveLong')||{value:100}).value)||100;
     const gPA = Number(($('peakAfter')||{value:30}).value)||30;
     const rSH = (r.straightHoldMs!=null && r.straightHoldMs!==0xFFFF) ? r.straightHoldMs : gSH;
     const rCL = (r.curveLongMs   !=null && r.curveLongMs   !==0xFFFF) ? r.curveLongMs   : gCL;
@@ -5414,8 +5630,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
     // 物理パラメータ
     const gND = Number(($('normalDuty')||{value:200}).value)||200;
-    const gSH = Number(($('straightHold')||{value:250}).value)||250;
-    const gCL = Number(($('curveLong')||{value:180}).value)||180;
+    const gSH = Number(($('straightHold')||{value:100}).value)||100;
+    const gCL = Number(($('curveLong')||{value:100}).value)||100;
     const gPA = Number(($('peakAfter')||{value:30}).value)||30;
     const rSH = (r.straightHoldMs!=null && r.straightHoldMs!==0xFFFF) ? r.straightHoldMs : gSH;
     const rCL = (r.curveLongMs   !=null && r.curveLongMs   !==0xFFFF) ? r.curveLongMs   : gCL;
@@ -8344,10 +8560,10 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   function lapRequiredHoldMs(seg){
     seg=Number(seg);
     if(seg===SEG.LEFT_HOLD || seg===SEG.RIGHT_HOLD){
-      return clamp(Number(($('curveLong')||{value:180}).value)||180,30,1200);
+      return clamp(Number(($('curveLong')||{value:100}).value)||100,30,1200);
     }
     if(seg===SEG.STRAIGHT_HOLD){
-      return clamp(Number(($('straightHold')||{value:250}).value)||250,20,2000);
+      return clamp(Number(($('straightHold')||{value:100}).value)||100,20,2000);
     }
     return 0;
   }
@@ -8432,8 +8648,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   function syncLapBoundaryTimingInputs(){
     const curve=$('curveLong'), straight=$('straightHold');
     const lapCurve=$('lapCurveLongMs'), lapStraight=$('lapStraightHoldMs');
-    if(lapCurve && curve)lapCurve.value=curve.value||180;
-    if(lapStraight && straight)lapStraight.value=straight.value||250;
+    if(lapCurve && curve)lapCurve.value=curve.value||100;
+    if(lapStraight && straight)lapStraight.value=straight.value||100;
   }
   function lapBoundaryPatternTile(seg,idx,total){
     const d=patternTile(seg,idx,total,
@@ -8487,8 +8703,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     const target=pat.length?`「${lapBoundaryPatternLabel()}」を検知した地点`:'停止後ログの繰り返しから自動推定した地点';
     const occ=lapBoundaryOccurrenceLabel();
     const passes=getLapPassesPerLap();
-    const curve=Number(($('lapCurveLongMs')||$('curveLong')||{value:180}).value)||180;
-    const straight=Number(($('lapStraightHoldMs')||$('straightHold')||{value:250}).value)||250;
+    const curve=Number(($('lapCurveLongMs')||$('curveLong')||{value:100}).value)||100;
+    const straight=Number(($('lapStraightHoldMs')||$('straightHold')||{value:100}).value)||100;
     el.textContent=`現在は、${target}を周回候補にします。${occ}。採用した区切りを${passes}回通過したら1周です。左/右カーブ継続は${curve}ms以上、直線継続は${straight}ms以上で判定します。`;
   }
 
@@ -8863,7 +9079,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     localStorage.setItem('mini4ai_rules_v36',payload);
   }
   function readParams(){
-    const ids=['normalDuty','startDuty','cornerTh','straightTh','wavePosTh','waveNegTh','waveWindow','waveLatch','waveCooldown','exitDebounce','peakAfter','peakDrop','curveLong','straightHold','segCooldown','liveSeg'];
+    const ids=['normalDuty','startDuty','cornerTh','straightTh','wavePosTh','waveNegTh','waveWindow','waveLatch','waveCooldown','exitDebounce','peakAfter','peakDrop','curveLong','curveHold90Ms','curveHold180Ms','curveHoldLongMs','straightHold','segCooldown','liveSeg'];
     const o={};ids.forEach(id=>{const el=$(id);if(el)o[id]=el.value});return o;
   }
   function loadLocal(){
@@ -8922,6 +9138,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
   // ===== v3.73 Workspace: 左メニュー + カード表示/順番設定 =====
   const WORKSPACE_CARD_DEFS=[
+    {id:'guide',label:'かんたん設定'},
     {id:'run',label:'走行・ラップ'},
     {id:'tune',label:'チューン'},
     {id:'logs',label:'停止後ログ'},
@@ -8933,6 +9150,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   const WORKSPACE_VIEWS={
     // v3.75: 左メニューを押したら、その作業カードだけを表示する。
     // 走行・ラップを常に混ぜると「何を押しても走行画面」に見えるため、各ビューを分離する。
+    guide:['guide'],
     run:['run'],
     tune:['tune'],
     logs:['logs'],
@@ -8947,7 +9165,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   const WORKSPACE_VIEW_KEY='mini4ai-workspace-view-v1';
   let workspaceOrder=WORKSPACE_CARD_DEFS.map(c=>c.id);
   let workspaceVisible={};
-  let workspaceView='run';
+  let workspaceView='guide';
 
   function loadWorkspacePrefs(){
     try{
@@ -9031,19 +9249,650 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   function initWorkspaceLayout(){
     loadWorkspacePrefs();
     document.querySelectorAll('[data-workspace-view]').forEach(b=>{
-      b.onclick=()=>setWorkspaceView(b.dataset.workspaceView);
+      b.onclick=()=>{
+        if(b.dataset.workspaceView==='guide'){openGuideWizardScreen();return;}
+        setWorkspaceView(b.dataset.workspaceView);
+      };
     });
     const reset=$('btnWorkspaceReset');
     if(reset)reset.onclick=()=>{
       workspaceOrder=WORKSPACE_CARD_DEFS.map(c=>c.id);
-      workspaceVisible={};workspaceView='run';saveWorkspacePrefs();buildWorkspaceCardControls();applyWorkspaceLayout();toast('表示設定を初期化しました');
+      workspaceVisible={};workspaceView='guide';saveWorkspacePrefs();buildWorkspaceCardControls();applyWorkspaceLayout();toast('表示設定を初期化しました');
     };
     buildWorkspaceCardControls();
     applyWorkspaceLayout();
   }
 
 
-  const WORKSPACE_SIDEBAR_WIDTH_KEY='mini4ai-workspace-sidebar-width-v1';
+
+
+
+  // ===== v4.21-r33 Guided setup wizard: full-screen, one decision per screen, iterative correction loop =====
+  const GUIDE_STEP_COUNT=16;
+  const GUIDE_STEP_CURVE_HOLD=6;
+  const GUIDE_STEP_TRIGGER=7;
+  const GUIDE_STEP_WAIT=8;
+  const GUIDE_STEP_BRAKE=9;
+  const GUIDE_STEP_SPEED=10;
+  const GUIDE_STEP_CONFIRM=11;
+  const GUIDE_STEP_RUN=12;
+  const GUIDE_STEP_RESULT=13;
+  const GUIDE_STEP_RESULT_MENU=14;
+  const GUIDE_STEP_IMPROVE=15;
+  const guideDraft={
+    normalPct:50,
+    actionKind:'brake',
+    targetPlace:'ウェーブの入口付近',
+    originPolicy:'before',
+    originSegments:[],
+    showInstantCurves:false,
+    curveHoldKind:'curve90',
+    curveHoldMs:100,
+    trigger:'every',
+    triggerN:2,
+    originCountPerLap:3,
+    waitMs:180,
+    brakeMs:250,
+    speedPct:70,
+    speedMs:300,
+    lastResult:'',
+    ruleIndex:null
+  };
+  let guideStep=0;
+  let guideRuleBook=[];
+  let guideAdvice=null;
+  let guideFixMode=false;
+  const GUIDE_ADVICE_TEXT={
+    nofire:{title:'改善: 起点条件を短くする',body:'起点セクションを1つ、必要でも2つまでに減らします。停止後ログに実際に出ているセクションだけを使ってください。'},
+    early:{title:'改善: 待機時間を増やす',body:'アクションが早すぎます。ブレーキ/低出力の前に入れる待機時間を+20〜50msして、もう一度走らせます。'},
+    lateOrigin:{title:'改善: 手前の起点に変える',body:'目的位置を見てからブレーキしていると遅れます。さらに手前の特徴的なセクションを起点にしてください。'},
+    lateWait:{title:'改善: 待機時間を減らす',body:'起点は合っているが遅い場合は、待機時間を-20〜50msします。待機なしでも遅い場合は、さらに手前の起点に変えます。'},
+    often:{title:'改善: 発動回数を絞る',body:'違う場所でも出る場合は、毎回発動をやめて、奇数回・偶数回・N回目のみを使います。'}
+  };
+  function guideNeedsBrake(){return guideDraft.actionKind==='brake'||guideDraft.actionKind==='brake_speed';}
+  function guideNeedsSpeed(){return guideDraft.actionKind==='speed'||guideDraft.actionKind==='brake_speed';}
+  function curveHoldPresetMs(kind){
+    const defaults={curve90:100,curve180:200,curveLong:300};
+    const idMap={curve90:'curveHold90Ms',curve180:'curveHold180Ms',curveLong:'curveHoldLongMs'};
+    const id=idMap[kind];
+    const el=id?$(id):null;
+    return clamp(Number(el&&el.value)||defaults[kind]||100,30,1200);
+  }
+  function curveHoldPresetLabel(kind){
+    if(kind==='curve90')return `90度カーブ以上（${curveHoldPresetMs(kind)}ms以上）`;
+    if(kind==='curve180')return `180度カーブ以上（${curveHoldPresetMs(kind)}ms以上）`;
+    if(kind==='curveLong')return `それ以上の長いカーブ（${curveHoldPresetMs(kind)}ms以上）`;
+    return `${guideDraft.curveHoldMs}ms以上`;
+  }
+  function guideClearAdvice(){guideAdvice=null;guideFixMode=false;}
+  function guideSetAdvice(key){
+    const a=GUIDE_ADVICE_TEXT[key];
+    if(a){guideAdvice={key,title:a.title,body:a.body};guideFixMode=true;}
+  }
+  function guideAdviceBannerHtml(){
+    if(!guideAdvice)return '';
+    return `<div class="guide-advice-banner"><b>${guideAdvice.title}</b><p>${guideAdvice.body}</p><button type="button" class="btn btn-secondary" data-guide-back-advice="1">改善アドバイスに戻る</button></div>`;
+  }
+  function guideResetDraftForNewRule(){
+    const keepSpeed=guideDraft.normalPct;
+    guideDraft.normalPct=keepSpeed;
+    guideDraft.actionKind='brake';
+    guideDraft.targetPlace='ウェーブの入口付近';
+    guideDraft.originPolicy='before';
+    guideDraft.originSegments=[];
+    guideDraft.showInstantCurves=false;
+    guideDraft.curveHoldKind='curve90';
+    guideDraft.curveHoldMs=curveHoldPresetMs('curve90');
+    guideDraft.trigger='every';
+    guideDraft.triggerN=2;
+    guideDraft.originCountPerLap=3;
+    guideDraft.waitMs=180;
+    guideDraft.brakeMs=250;
+    guideDraft.speedPct=70;
+    guideDraft.speedMs=300;
+    guideDraft.lastResult='';
+    guideDraft.ruleIndex=null;
+    guideClearAdvice();
+  }
+
+  function guideDraftMeta(){
+    return {
+      normalPct:guideDraft.normalPct,
+      actionKind:guideDraft.actionKind,
+      targetPlace:guideDraft.targetPlace,
+      originPolicy:guideDraft.originPolicy,
+      originSegments:[...(guideDraft.originSegments||[])],
+      showInstantCurves:!!guideDraft.showInstantCurves,
+      curveHoldKind:guideDraft.curveHoldKind,
+      curveHoldMs:guideDraft.curveHoldMs,
+      trigger:guideDraft.trigger,
+      triggerN:guideDraft.triggerN,
+      originCountPerLap:guideDraft.originCountPerLap,
+      waitMs:guideDraft.waitMs,
+      brakeMs:guideDraft.brakeMs,
+      speedPct:guideDraft.speedPct,
+      speedMs:guideDraft.speedMs,
+      sentence:guideNaturalSentence()
+    };
+  }
+  function guideRestoreDraftMeta(meta,index){
+    if(!meta)return false;
+    guideDraft.normalPct=meta.normalPct??guideDraft.normalPct;
+    guideDraft.actionKind=meta.actionKind||'brake';
+    guideDraft.targetPlace=meta.targetPlace||'ウェーブの入口付近';
+    guideDraft.originPolicy=meta.originPolicy||'before';
+    guideDraft.originSegments=Array.isArray(meta.originSegments)?[...meta.originSegments]:[];
+    guideDraft.showInstantCurves=!!meta.showInstantCurves;
+    guideDraft.curveHoldKind=meta.curveHoldKind||'curve90';
+    guideDraft.curveHoldMs=meta.curveHoldMs||curveHoldPresetMs(guideDraft.curveHoldKind);
+    guideDraft.trigger=meta.trigger||'every';
+    guideDraft.triggerN=meta.triggerN||1;
+    guideDraft.originCountPerLap=meta.originCountPerLap||3;
+    guideDraft.waitMs=meta.waitMs??180;
+    guideDraft.brakeMs=meta.brakeMs??250;
+    guideDraft.speedPct=meta.speedPct??70;
+    guideDraft.speedMs=meta.speedMs??300;
+    guideDraft.lastResult='';
+    guideDraft.ruleIndex=index;
+    guideClearAdvice();
+    guideClampDraft();
+    return true;
+  }
+  function guideInferMetaFromRule(r,index){
+    if(!r)return null;
+    const acts=r.actions||[];
+    const hasBrake=acts.some(a=>a.type===ACTION.BRAKE);
+    const speedAct=acts.find(a=>a.type===ACTION.SPEED);
+    const waitAct=acts.find(a=>a.type===ACTION.WAIT);
+    let actionKind=hasBrake&&speedAct?'brake_speed':(speedAct?'speed':'brake');
+    let trigger='every', triggerN=Number(r.triggerPhase)||1, originCountPerLap=Number(r.triggerN)||3;
+    if(r.triggerMode===TRIG.ODD)trigger='odd';
+    else if(r.triggerMode===TRIG.EVEN)trigger='even';
+    else if(r.triggerMode===TRIG.EVERY_N){trigger='onlyN';originCountPerLap=Number(r.triggerN)||3;triggerN=Number(r.triggerPhase)||1;}
+    const curveMs=Number(r.curveLongMs)||curveHoldPresetMs('curve90');
+    let curveHoldKind='custom';
+    if(Math.abs(curveMs-curveHoldPresetMs('curve90'))<1)curveHoldKind='curve90';
+    else if(Math.abs(curveMs-curveHoldPresetMs('curve180'))<1)curveHoldKind='curve180';
+    else if(Math.abs(curveMs-curveHoldPresetMs('curveLong'))<1)curveHoldKind='curveLong';
+    return {
+      normalPct:guideDraft.normalPct,
+      actionKind,
+      targetPlace:'目的位置',
+      originPolicy:'before',
+      originSegments:[...(r.pattern||[])],
+      showInstantCurves:(r.pattern||[]).some(s=>s===SEG.LEFT||s===SEG.RIGHT),
+      curveHoldKind,
+      curveHoldMs:curveMs,
+      trigger,
+      triggerN,
+      originCountPerLap,
+      waitMs:waitAct?Number(waitAct.durationMs)||0:0,
+      brakeMs:(acts.find(a=>a.type===ACTION.BRAKE)||{}).durationMs||250,
+      speedPct:speedAct?Math.round((Number(speedAct.strength)||0)/255*100):70,
+      speedMs:speedAct?Number(speedAct.durationMs)||300:300
+    };
+  }
+  function guideRuleForRuntime(r){
+    const out=JSON.parse(JSON.stringify(r||{}));
+    delete out._guideMeta;
+    return out;
+  }
+  function guideSyncRuntimeRules(){
+    rules=(guideRuleBook||[]).map(guideRuleForRuntime);
+    selectedRule=Math.max(0,Math.min(guideDraft.ruleIndex||0,Math.max(0,rules.length-1)));
+    renderRules();saveLocal();if(typeof updateAllRuleSummaries==='function')updateAllRuleSummaries();
+  }
+  function guideLoadRuleForEdit(index,targetStep=2){
+    const i=Number(index);
+    if(!Number.isInteger(i)||i<0||i>=guideRuleBook.length){toast('編集するルールが見つかりません');return;}
+    const r=guideRuleBook[i];
+    const meta=r._guideMeta||guideInferMetaFromRule(r,i);
+    guideRestoreDraftMeta(meta,i);
+    guideStep=targetStep;
+    toast(`ルール${i+1}を再編集します`);
+    renderGuideWizard();
+  }
+  function guideDeleteRule(index){
+    const i=Number(index);
+    if(!Number.isInteger(i)||i<0||i>=guideRuleBook.length)return;
+    if(!confirm(`ルール${i+1}を削除しますか？`))return;
+    guideRuleBook.splice(i,1);
+    if(guideDraft.ruleIndex===i){guideResetDraftForNewRule();}
+    else if(guideDraft.ruleIndex!=null && guideDraft.ruleIndex>i){guideDraft.ruleIndex--;}
+    guideSyncRuntimeRules();
+    toast(`ルール${i+1}を削除しました`);
+    if(guideRuleBook.length===0 && guideStep>=GUIDE_STEP_RESULT_MENU){guideResetDraftForNewRule();guideStep=2;}
+    renderGuideWizard();
+  }
+  function guideClampDraft(){
+    guideDraft.normalPct=clamp(Number(guideDraft.normalPct)||50,10,100);
+    guideDraft.originCountPerLap=clamp(Number(guideDraft.originCountPerLap)||1,1,20);
+    if(['curve90','curve180','curveLong'].includes(guideDraft.curveHoldKind)) guideDraft.curveHoldMs=curveHoldPresetMs(guideDraft.curveHoldKind);
+    else guideDraft.curveHoldMs=clamp(Number(guideDraft.curveHoldMs)||100,30,1200);
+    guideDraft.triggerN=clamp(Number(guideDraft.triggerN)||1,1,guideDraft.originCountPerLap||20);
+    guideDraft.waitMs=clamp(Number(guideDraft.waitMs)||0,0,5000);
+    guideDraft.brakeMs=clamp(Number(guideDraft.brakeMs)||0,0,5000);
+    guideDraft.speedPct=clamp(Number(guideDraft.speedPct)||70,10,100);
+    guideDraft.speedMs=clamp(Number(guideDraft.speedMs)||0,0,5000);
+  }
+  function guideUsesCurveHold(){return (guideDraft.originSegments||[]).some(s=>s===SEG.LEFT_HOLD||s===SEG.RIGHT_HOLD);}
+  function guideSegLabelList(){return (guideDraft.originSegments||[]).map(s=>shortSegLabel(s)).join(' → ')||'未選択'}
+  function guideOriginConditionNote(){
+    const parts=[];
+    if(guideUsesCurveHold())parts.push(curveHoldPresetLabel(guideDraft.curveHoldKind));
+    const trig=guideTriggerLabel();
+    if(trig!=='毎回')parts.push(trig);
+    return parts.length ? `（${parts.join('・')}）` : '';
+  }
+  function guideSegPill(seg,idx){
+    const meta=SEG_META[seg]||['?','不明','seg-system'];
+    return `<span class="seg-pip ${meta[2]}"><span class="ic">${meta[0]}</span>${idx?idx+'番目: ':''}${meta[1]}</span>`;
+  }
+  function guideSegOrderHtml(){
+    const arr=guideDraft.originSegments||[];
+    return `<div class="guide-seg-order"><div class="guide-seg-order-title">選択した起点の順序</div><div class="guide-seg-order-row">${arr.length?arr.map((seg,i)=>`${guideSegPill(seg,i+1)}${i<arr.length-1?'<span class="guide-arrow">→</span>':''}`).join(''):'<span class="guide-seg-order-empty">まだ選択していません。クリックした順に起点になります。</span>'}</div></div>`;
+  }
+  function guideActionLabel(){
+    if(guideDraft.actionKind==='brake')return `ブレーキ ${guideDraft.brakeMs}ms`;
+    if(guideDraft.actionKind==='speed')return `低出力 ${guideDraft.speedPct}%を${guideDraft.speedMs}ms間`;
+    return `ブレーキ ${guideDraft.brakeMs}ms → 低出力 ${guideDraft.speedPct}%を${guideDraft.speedMs}ms間`;
+  }
+  function guideTriggerLabel(){
+    if(guideDraft.trigger==='odd')return '奇数回のみ';
+    if(guideDraft.trigger==='even')return '偶数回のみ';
+    if(guideDraft.trigger==='onlyN')return `1周に${guideDraft.originCountPerLap}回あるうち${guideDraft.triggerN}番目のみ`;
+    return '毎回';
+  }
+  function guideTriggerNote(){
+    const t=guideTriggerLabel();
+    return t==='毎回' ? '' : `（${t}）`;
+  }
+  function guideNaturalSentence(){
+    const note=guideOriginConditionNote();
+    const start = guideDraft.originPolicy==='direct'
+      ? `${guideDraft.targetPlace}そのもの${note}を起点として`
+      : `${guideDraft.targetPlace}の手前にある「${guideSegLabelList()}${note}」を起点として`;
+    return `${start}、認識後に${guideDraft.waitMs}ms待ってから、${guideActionLabel()}を実行します。`;
+  }
+  function guideMiniSummary(){
+    const count=guideRuleBook.length + ((guideDraft.ruleIndex==null)?1:0);
+    const countBadge=`<span class="guide-rule-count">かんたん設定ルール ${Math.max(1,count)}件目</span>`;
+    if(guideStep<=1)return `<b>考え方:</b> 目的位置そのものではなく、手前の起点から時間差で合わせます。${countBadge}`;
+    return `<b>現在の設定:</b> ${guideNaturalSentence()} ${countBadge}`;
+  }
+  function guideRuleToSentence(r,i){
+    if(r && r._guideMeta && r._guideMeta.sentence)return `ルール${i+1}: ${r._guideMeta.sentence}`;
+    const pattern=(r.pattern||[]).map(s=>shortSegLabel(s)).join(' → ')||'未設定';
+    const trig=triggerModeText(r.triggerMode,r.triggerN,r.triggerPhase);
+    const acts=(r.actions||[]).map(actionToText).join(' → ')||'アクションなし';
+    return `ルール${i+1}: 「${pattern}」を起点として、${trig}、${acts}を実行`;
+  }
+  function guideRuleBookHtml(options={}){
+    const showActions=!!options.actions;
+    const items=[];
+    (guideRuleBook||[]).forEach((r,i)=>{
+      const editing=i===guideDraft.ruleIndex;
+      const body=editing?guideNaturalSentence():guideRuleToSentence(r,i);
+      const actions=showActions?`<div class="guide-rule-actions"><button type="button" class="btn success" data-guide-edit-rule="${i}">このルールを編集</button><button type="button" class="btn btn-secondary" data-guide-edit-rule-confirm="${i}">確認から再開</button><button type="button" class="btn danger" data-guide-delete-rule="${i}">削除</button></div>`:'';
+      items.push(`<div class="guide-rule-item ${editing?'current':''}"><b>${editing?'編集中':'追加済み'}: ルール${i+1}</b><br>${body}${actions}</div>`);
+    });
+    if(guideDraft.ruleIndex==null)items.push(`<div class="guide-rule-item current"><b>今回の新規ルール</b><br>${guideNaturalSentence()}</div>`);
+    return '<div class="guide-rule-stack">'+items.join('')+'</div>';
+  }
+  function guideRuleManagerHtml(){
+    const has=(guideRuleBook||[]).length>0;
+    return `<div class="guide-wizard-summary"><div class="guide-rule-manage-head"><span>かんたん設定のルール一覧</span><span class="guide-rule-count">${guideRuleBook.length}件</span></div><div class="guide-rule-manage-hint">2件目・3件目を作った後でも、ここから編集するルールを選べます。どのルールを直しているか分からなくなったら、まずこの一覧に戻ってください。</div>${has?guideRuleBookHtml({actions:true}):'<div class="guide-wizard-note">まだ追加済みルールはありません。</div>'}<div class="guide-rule-actions"><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">このルールセットで走る</button></div></div>`;
+  }
+  function guideSelectHtml(options, current, setter){
+    return `<div class="guide-wizard-options">`+options.map(o=>`<button type="button" class="guide-wizard-option ${o.value===current?'selected':''}" data-guide-set="${setter}" data-guide-value="${o.value}"><b>${o.label}</b>${o.hint?`<span>${o.hint}</span>`:''}</button>`).join('')+`</div>`;
+  }
+  function guideNumberHtml(id,value,unit,min,max,step=10,label=''){
+    return `<div class="guide-param-card"><div class="guide-param-label">${label||'値を入力'}</div><div class="guide-param-input"><input id="${id}" type="number" value="${value}" min="${min}" max="${max}" step="${step}"><span class="unit">${unit}</span></div></div>`;
+  }
+  function guideSpeedSelectHtml(){
+    const pcts=[30,40,50,60,70,80,90,100];
+    return `<div class="guide-speed-grid">`+pcts.map(p=>`<button type="button" class="guide-wizard-option guide-speed-option ${Number(guideDraft.normalPct)===p?'selected':''}" data-guide-speed="${p}"><b>${p}%</b><span>通常速度</span></button>`).join('')+`</div>`;
+  }
+  function guideApplyNormalSpeed(){
+    guideClampDraft();
+    const pct=clamp(Number(guideDraft.normalPct)||50,10,100);
+    const duty=Math.round(pct/100*255);
+    const hidden=$('normalDuty'); if(hidden)hidden.value=duty;
+    const a=$('normalDutyPct'); if(a)a.value=pct;
+    const b=$('normalDutyPctDesign'); if(b)b.value=pct;
+    saveLocal();
+    if(typeof renderRules==='function')renderRules();
+  }
+  function guideSyncNormalSpeedFromUi(){
+    const sel=$('normalDutyPct');
+    const hidden=$('normalDuty');
+    if(sel && sel.value){guideDraft.normalPct=clamp(Number(sel.value)||50,10,100);return;}
+    if(hidden){
+      const d=Number(hidden.value)||128;
+      guideDraft.normalPct=clamp(Math.round((Math.max(0,Math.min(255,d))/255)*100/10)*10,10,100);
+    }
+  }
+  function refreshGuideConnectionStatus(){
+    const card=$('guideConnCard'), text=$('guideConnText'), cap=$('guideConnCaption');
+    if(!card||!text)return;
+    const src=$('btnConnect');
+    const mainText=$('connText')?$('connText').textContent:'';
+    const connected=!!(src && src.classList.contains('connected'));
+    const connecting=!!(src && src.classList.contains('connecting'));
+    card.classList.toggle('connected',connected);
+    card.classList.toggle('connecting',connecting);
+    text.textContent=mainText || (connected?'接続中':'マシン未接続');
+    if(cap)cap.textContent=connected?'接続済みです。走行開始できます。':(connecting?'ブラウザの接続選択を完了してください。':'接続ボタンを押してマシンを選択してください。');
+  }
+  function openGuideWizardScreen(){
+    guideSyncNormalSpeedFromUi();
+    guideRuleBook=[];
+    guideResetDraftForNewRule();
+    guideStep=0;
+    const scr=$('guideWizardScreen');
+    if(scr){scr.classList.add('open');scr.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+    renderGuideWizard();
+  }
+  function closeGuideWizardScreen(){
+    const scr=$('guideWizardScreen');
+    if(scr){scr.classList.remove('open');scr.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  }
+  function guideValidateStep(){
+    if(guideStep===5 && (!guideDraft.originSegments || guideDraft.originSegments.length===0))return false;
+    if(guideStep===GUIDE_STEP_RESULT && !guideDraft.lastResult)return false;
+    return true;
+  }
+  function guideConfirmStep(){return GUIDE_STEP_CONFIRM;}
+  function guideStepAfterOrigin(){return guideUsesCurveHold()?GUIDE_STEP_CURVE_HOLD:GUIDE_STEP_TRIGGER;}
+  function guideStepAfterWait(){return guideNeedsBrake()?GUIDE_STEP_BRAKE:(guideNeedsSpeed()?GUIDE_STEP_SPEED:GUIDE_STEP_CONFIRM);}
+  function guideStepAfterBrake(){return guideNeedsSpeed()?GUIDE_STEP_SPEED:GUIDE_STEP_CONFIRM;}
+  function guideBackTarget(){
+    if(guideStep===GUIDE_STEP_TRIGGER)return 5;
+    if(guideStep===GUIDE_STEP_WAIT)return GUIDE_STEP_TRIGGER;
+    if(guideStep===GUIDE_STEP_BRAKE)return GUIDE_STEP_WAIT;
+    if(guideStep===GUIDE_STEP_SPEED)return guideNeedsBrake()?GUIDE_STEP_BRAKE:GUIDE_STEP_WAIT;
+    if(guideStep===GUIDE_STEP_CONFIRM)return guideNeedsSpeed()?GUIDE_STEP_SPEED:(guideNeedsBrake()?GUIDE_STEP_BRAKE:GUIDE_STEP_WAIT);
+    if(guideStep===GUIDE_STEP_RUN)return GUIDE_STEP_CONFIRM;
+    if(guideStep===GUIDE_STEP_RESULT)return GUIDE_STEP_RUN;
+    if(guideStep===GUIDE_STEP_RESULT_MENU)return GUIDE_STEP_RESULT;
+    if(guideStep===GUIDE_STEP_IMPROVE)return GUIDE_STEP_RESULT_MENU;
+    return Math.max(0,guideStep-1);
+  }
+  function guideStepHtml(){
+    guideClampDraft();
+    switch(guideStep){
+      case 0:
+        return `<h3>1つずつ設定します。</h3><p>この画面では、必要な質問だけを順番に出します。通常画面のルール表やログは表示しません。</p><div class="guide-wizard-note"><b>重要:</b> 目的の場所で止めたい場合、目的の場所を見てからブレーキすると遅いことがあります。多くの場合は、手前の特徴的なセクションを起点にして、待機時間で合わせます。</div>`;
+      case 1:
+        return `<h3>走行時の通常速度を決めます。</h3><p>まず、ルール発動前の基本速度を決めます。速すぎると認識・ブレーキ調整が難しくなるため、最初は50〜70%程度から試すのがおすすめです。</p>${guideSpeedSelectHtml()}<div class="guide-wizard-good">この設定は通常画面の「通常速度」と同期します。必要なら後から変更できます。</div>`;
+      case 2:
+        return `<h3>何をしたいですか？</h3><p>今回のアクションを1つ選んでください。</p>`+guideSelectHtml([
+          {value:'brake',label:'強くブレーキしたい',hint:'止めたい、または大きく減速したい場合。'},
+          {value:'speed',label:'少しだけ出力を下げたい',hint:'姿勢を乱さず減速したい場合。'},
+          {value:'brake_speed',label:'ブレーキ後に低出力でつなぐ',hint:'強く落としてから再加速を抑えたい場合。'}
+        ],guideDraft.actionKind,'actionKind');
+      case 3:
+        return `<h3>どこで効かせたいですか？</h3><p>アクションを効かせたい目的位置を選びます。</p>`+guideSelectHtml([
+          {value:'ウェーブの入口付近',label:'ウェーブの入口付近'},
+          {value:'ウェーブの途中',label:'ウェーブの途中'},
+          {value:'カーブの入口',label:'カーブの入口'},
+          {value:'カーブの途中',label:'カーブの途中'},
+          {value:'直線の終わり',label:'直線の終わり'},
+          {value:'ジャンプ前',label:'ジャンプ前'}
+        ],guideDraft.targetPlace,'targetPlace');
+      case 4:
+        return `<h3>認識する場所を選びます。</h3><p>目的位置そのものを認識するか、手前のセクションを起点にするかを選んでください。</p>`+guideSelectHtml([
+          {value:'before',label:'手前の特徴的なセクションを起点にする',hint:'おすすめ。ブレーキ開始の遅れを避けやすいです。'},
+          {value:'direct',label:'目的位置そのものを起点にする',hint:'遅れる可能性があります。検証用・低速時のみ。'}
+        ],guideDraft.originPolicy,'originPolicy')+`<div class="guide-wizard-note">例: ウェーブで止めたい場合、「ウェーブを見てからブレーキ」では遅いことがあります。手前の左/右カーブや直線継続などを起点にします。</div>`;
+      case 5:{
+        const baseSegs=[SEG.STRAIGHT,SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
+        const segs=guideDraft.showInstantCurves?[SEG.LEFT,SEG.RIGHT,...baseSegs]:baseSegs;
+        const buttons=segs.map(seg=>{
+          const sel=guideDraft.originSegments.includes(seg);
+          const meta=SEG_META[seg]||['?','不明','seg-system'];
+          return `<button type="button" class="guide-wizard-option guide-seg-option ${sel?'selected':''}" data-guide-seg="${seg}">${guideSegPill(seg)}<span><b>${meta[1]}</b><span>${sel?'選択中。クリックで解除':'クリックした順に起点へ追加'}</span></span></button>`;
+        }).join('');
+        const instantNote=guideDraft.showInstantCurves
+          ? `<div class="guide-wizard-note"><b>単発カーブを表示中:</b> 左C/右Cはウェーブの入口・出口でも反応しやすいため、誤発動の原因になります。使う場合は、必ず停止後ログで本当にその場所だけに出ているか確認してください。</div>`
+          : `<div class="guide-wizard-note"><b>左C/右C単発は非表示にしています。</b> ウェーブの入口・出口でも反応しやすく、初見では誤発動の原因になりやすいためです。基本は「左C継続」「右C継続」を使い、次の画面で90度・180度・それ以上を選んでください。</div>`;
+        const instantButton=`<button type="button" class="btn btn-secondary" data-guide-toggle-instant-curves="1">${guideDraft.showInstantCurves?'単発の左C/右Cを隠す':'上級者向け: 単発の左C/右Cを表示'}</button>`;
+        return `<h3>起点セクションを選んでください。</h3>${guideSegOrderHtml()}<p>上の「選択した起点の順序」の順に認識します。最初は1つ、多くても2つまでにしてください。3つ以上つなげると、1つでも認識が外れた時点で発動しません。</p>${instantNote}<div>${instantButton}</div><div class="guide-wizard-options guide-wizard-two">${buttons}</div>`;
+      }
+      case GUIDE_STEP_CURVE_HOLD:
+        return `<h3>カーブ継続の種類を選びます。</h3><p>左/右カーブ継続を、90度・180度・それ以上で別々に選べます。値は通常画面の「認識調整」で変更できます。</p>`+guideSelectHtml([
+          {value:'curve90',label:`90度カーブ以上`,hint:`${curveHoldPresetMs('curve90')}ms以上。90度/180度の両方を起点にしたい場合。`},
+          {value:'curve180',label:`180度カーブ以上`,hint:`${curveHoldPresetMs('curve180')}ms以上。90度を避け、180度寄りのカーブを狙う場合。`},
+          {value:'curveLong',label:`それ以上の長いカーブ`,hint:`${curveHoldPresetMs('curveLong')}ms以上。180度より長く続くカーブを狙う場合。`},
+          {value:'custom',label:'手入力する',hint:'速度やコースに合わせて個別に調整します。'}
+        ],guideDraft.curveHoldKind||'curve90','curveHoldPreset')+(guideDraft.curveHoldKind==='custom'?guideNumberHtml('guideCurveHoldMs',guideDraft.curveHoldMs,'ms',30,1200,10,'このルールだけのカーブ継続判定時間'):'')+`<div class="guide-wizard-note"><b>考え方:</b> 左C/右C単発はウェーブ入口・出口でも出やすいため、実用上は「左/右カーブ継続」を起点にします。90度、180度、それ以上を別々に選ぶことで、同じ左/右カーブ継続でも狙うカーブ長を分けられます。</div>`;
+      case GUIDE_STEP_TRIGGER:
+        return `<h3>何回目で発動しますか？</h3><p>同じ起点が1周に複数回出る場合は、「1周に何回あるか」と「そのうち何番目で発動するか」を決めます。</p>`+guideSelectHtml([
+          {value:'every',label:'毎回発動する'},
+          {value:'odd',label:'奇数回だけ発動する'},
+          {value:'even',label:'偶数回だけ発動する'},
+          {value:'onlyN',label:'1周のうち指定した番号だけ発動する'}
+        ],guideDraft.trigger,'trigger')+(guideDraft.trigger==='onlyN'?`<div class="guide-param-grid">${guideNumberHtml('guideOriginCountPerLap',guideDraft.originCountPerLap,'回/周',1,20,1,'この起点は1周に何回ありますか？')}${guideNumberHtml('guideTriggerN',guideDraft.triggerN,'番目',1,guideDraft.originCountPerLap,1,'そのうち何番目で発動しますか？')}</div><div class="guide-wizard-note"><b>例:</b> 1周に同じ起点が3回あり、2回目だけ止めたい場合は「3回/周」「2番目」にします。</div>`:'');
+      case GUIDE_STEP_WAIT:
+        return `<h3>起点から何ms待ちますか？</h3><p>起点を認識してから、目的位置に来るまでの時間差です。目安として、直線1枚ぶんは100ms程度から試すと調整しやすいです。</p>${guideNumberHtml('guideWaitMs',guideDraft.waitMs,'ms',0,5000,10,'ブレーキ/低出力の前に入れる待機時間')}<div class="guide-wizard-good">早すぎる場合は増やします。遅すぎる場合は減らします。待機なしでも遅い場合は、さらに手前の起点に変更してください。</div>`;
+      case GUIDE_STEP_BRAKE:
+        return `<h3>ブレーキ時間を決めます。</h3><p>ブレーキは時間(ms)で指定します。強く止めたい場合は長く、姿勢が乱れる場合は短くします。</p>${guideNumberHtml('guideBrakeMs',guideDraft.brakeMs,'ms',0,5000,10,'ブレーキ時間')}<div class="guide-wizard-note">ブレーキに%指定はありません。%を使うのは次の低出力だけです。</div>`;
+      case GUIDE_STEP_SPEED:
+        return `<h3>低出力を決めます。</h3><p>低出力は、ブレーキ後または単独で、モーターを弱く回し続ける設定です。</p><div class="guide-param-grid">${guideNumberHtml('guideSpeedPct',guideDraft.speedPct,'%',10,100,5,'低出力の強さ')}${guideNumberHtml('guideSpeedMs',guideDraft.speedMs,'ms',0,5000,10,'低出力を続ける時間')}</div>`;
+      case GUIDE_STEP_CONFIRM:
+        return `<h3>設定したルールを確認します。</h3><p>接続・走行の前に、自然文でもう一度確認してください。複数ルールを追加した場合は、かんたん設定で作ったルールセットだけを走行に使います。</p><div class="guide-wizard-summary"><div><b>通常速度:</b> ${guideDraft.normalPct}%</div><div class="guide-wizard-natural">${guideNaturalSentence()}</div><div class="guide-wizard-note"><b>重要:</b> 過去に通常画面で作ったルールは混ぜません。かんたん設定で追加したルールだけを反映します。</div><div><b>この内容でルール設計に反映し、接続・走行画面へ進みます。</b></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-confirm-run="1">接続・走行画面へ進む</button></div></div>`;
+      case GUIDE_STEP_RUN:
+        return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>今回のルールセット</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、かんたん設定で作ったルールセットだけを一時適用します。過去の通常ルールは今回の走行には使いません。</div></div><div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint">接続状態は上の表示で確認できます。接続できない場合は、XIAO MG24 Senseが起動していること、ブラウザがChrome/Edgeであることを確認してください。</div></div>`;
+      case GUIDE_STEP_RESULT:
+        return `<h3>走行後、結果を選んでください。</h3><p>もっとも近い結果を選んでください。次の画面で、改善するか、ルールを追加するか、もう一度走るかを選べます。</p>`+guideSelectHtml([
+          {value:'ok',label:'思い通りの場所で発動した'},
+          {value:'nofire',label:'発動しなかった'},
+          {value:'early',label:'早すぎた'},
+          {value:'late',label:'遅すぎた / 間に合わなかった'},
+          {value:'often',label:'違う場所でも発動した'}
+        ],guideDraft.lastResult||'','lastResult');
+      case GUIDE_STEP_RESULT_MENU:
+        return guideResultMenuHtml();
+      default:
+        return guideImprovementHtml();
+    }
+  }
+  function guideResultMenuHtml(){
+    const r=guideDraft.lastResult||'ok';
+    const label={ok:'思い通りの場所で発動した',nofire:'発動しなかった',early:'早すぎた',late:'遅すぎた / 間に合わなかった',often:'違う場所でも発動した'}[r]||'未選択';
+    const rec={
+      ok:'このルールは使えそうです。次は同じルールでもう一度走るか、別のルールを追加できます。',
+      nofire:'起点条件が長すぎる、または実際の停止後ログに出ていないセクションを使っている可能性があります。',
+      early:'ブレーキ/低出力の前に入れる待機時間を増やすのがおすすめです。',
+      late:'目的位置そのものを認識している場合は、さらに手前の起点に変えるのがおすすめです。起点が合っているなら待機時間を減らします。',
+      often:'毎回発動ではなく、奇数回・偶数回・N回目のみで発動場所を絞るのがおすすめです。'
+    }[r]||'';
+    const improveDisabled=r==='ok'?' disabled':'';
+    return `<h3>次に行う操作を選んでください。</h3><div class="guide-wizard-summary"><b>走行結果:</b> ${label}<br><b>おすすめ:</b> ${rec}</div>${guideRuleManagerHtml()}<div class="guide-improve-actions"><button type="button" class="btn success" data-guide-result-action="improve"${improveDisabled}>現在のルールを改善する</button><button type="button" class="btn" data-guide-result-action="add">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">接続・走行画面へ</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了して保存へ</button></div>`;
+  }
+  function guideImprovementHtml(){
+    const r=guideDraft.lastResult||'ok';
+    if(r==='ok')return `<h3>良い状態です。</h3><div class="guide-wizard-good">このルールは使えそうです。続けて別の場所用のルールを追加するか、同じルールセットでもう一度走れます。</div><div class="guide-wizard-summary"><b>現在のルールセット</b>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">電源OFF後やスタンドアローン起動でも使う場合は、最後に左メニューの「本体へ保存」を押してください。</div></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-jump="12">同じルールセットでもう一度走る</button><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了して保存へ</button></div>`;
+    if(r==='nofire')return `<h3>次の改善: 起点条件を短くします。</h3><p>複数セグメントをつなげすぎている可能性があります。まず起点を1つに減らし、停止後ログに実際に出ているセクションだけを使ってください。</p><div class="guide-wizard-note">おすすめ: 5セグメントのような長い条件は避け、1〜2セグメントから始めます。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="nofire" data-guide-target="5">起点を見直す</button><button type="button" class="btn btn-secondary" data-guide-jump="12">もう一度走る</button></div>`;
+    if(r==='early')return `<h3>次の改善: ブレーキ前の待機時間を増やします。</h3><p>起点は合っているが、アクション開始が早い状態です。ブレーキの前に入れている待機時間を少し増やしてください。</p><div class="guide-wizard-good">おすすめ: 待機時間を +20〜50ms して再走行します。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="early" data-guide-adjust="wait+30">待機時間を増やす</button><button type="button" class="btn btn-secondary" data-guide-improve="early" data-guide-target="8">待機時間を直接調整</button></div>`;
+    if(r==='late')return `<h3>次の改善: 手前の起点か、短い待機にします。</h3><p>目的位置そのものを認識してからブレーキしていると遅れます。ウェーブで止めたい場合は、ウェーブの手前の左/右カーブや直線継続を起点にしてください。</p><div class="guide-wizard-note">すでに手前を起点にしている場合は、待機時間を -20〜50ms します。待機なしで遅い場合は、さらに1つ手前の起点に変えます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="lateOrigin" data-guide-target="5">起点を見直す</button><button type="button" class="btn btn-secondary" data-guide-improve="lateWait" data-guide-adjust="wait-30">待機時間を減らす</button></div>`;
+    return `<h3>次の改善: 発動回数を絞ります。</h3><p>同じ起点が複数回出ています。毎回発動から、奇数回・偶数回・N回目のみへ変更してください。</p><div class="guide-wizard-good">おすすめ: 2回目だけ止めたい場合は「1周に何回あるか」と「何番目か」を設定します。左右対称に出る場合は奇数/偶数を試します。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="often" data-guide-target="7">発動回数を見直す</button><button type="button" class="btn btn-secondary" data-guide-jump="12">もう一度走る</button></div>`;
+  }
+  function guideBindDynamicInputs(){
+    const bindNum=(id,key,min,max)=>{const el=$(id);if(el)el.onchange=()=>{guideDraft[key]=clamp(Number(el.value)||0,min,max);guideClampDraft();renderGuideWizard();};};
+    bindNum('guideOriginCountPerLap','originCountPerLap',1,20);
+    bindNum('guideTriggerN','triggerN',1,guideDraft.originCountPerLap||20);
+    const guideCurveHoldInput=$('guideCurveHoldMs');
+    if(guideCurveHoldInput)guideCurveHoldInput.onchange=()=>{guideDraft.curveHoldKind='custom';guideDraft.curveHoldMs=clamp(Number(guideCurveHoldInput.value)||100,30,1200);guideClampDraft();renderGuideWizard();};
+    bindNum('guideWaitMs','waitMs',0,5000);
+    bindNum('guideBrakeMs','brakeMs',0,5000);
+    bindNum('guideSpeedPct','speedPct',10,100);
+    bindNum('guideSpeedMs','speedMs',0,5000);
+    document.querySelectorAll('[data-guide-set]').forEach(b=>{b.onclick=()=>{
+      const key=b.dataset.guideSet;
+      const val=b.dataset.guideValue;
+      if(key==='curveHoldPreset'){
+        guideDraft.curveHoldKind=val;
+        if(val==='curve90'||val==='curve180'||val==='curveLong')guideDraft.curveHoldMs=curveHoldPresetMs(val);
+        else if(val==='custom') guideDraft.curveHoldMs=clamp(Number(guideDraft.curveHoldMs)||150,30,1200);
+      }else{
+        guideDraft[key]=val;
+      }
+      guideClampDraft();renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-speed]').forEach(b=>{b.onclick=()=>{guideDraft.normalPct=clamp(Number(b.dataset.guideSpeed)||50,10,100);guideApplyNormalSpeed();renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-seg]').forEach(b=>{b.onclick=()=>{
+      const seg=Number(b.dataset.guideSeg);
+      const arr=guideDraft.originSegments;
+      const idx=arr.indexOf(seg);
+      if(idx>=0)arr.splice(idx,1);
+      else{
+        if(arr.length>=2){toast('かんたん設定では起点は最大2つまでです。3つ以上は通常のルール設計で編集してください。');return;}
+        arr.push(seg);
+      }
+      renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-toggle-instant-curves]').forEach(b=>{b.onclick=()=>{
+      guideDraft.showInstantCurves=!guideDraft.showInstantCurves;
+      if(!guideDraft.showInstantCurves){
+        guideDraft.originSegments=(guideDraft.originSegments||[]).filter(seg=>seg!==SEG.LEFT&&seg!==SEG.RIGHT);
+      }
+      renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-action]').forEach(b=>{b.onclick=()=>{
+      const act=b.dataset.guideAction;
+      if(act==='connect'){const c=$('btnConnect'); if(c)c.click();}
+      if(act==='start'){guideApplyDraftRule(); const st=$('btnStart'); if(st)st.click();}
+      if(act==='stop'){const sp=$('btnStop'); if(sp)sp.click();}
+      setTimeout(refreshGuideConnectionStatus,80);
+      setTimeout(refreshGuideConnectionStatus,800);
+    };});
+    document.querySelectorAll('[data-guide-confirm-run]').forEach(b=>{b.onclick=()=>{guideApplyAndGoRun();};});
+    document.querySelectorAll('[data-guide-back-advice]').forEach(b=>{b.onclick=()=>{guideStep=GUIDE_STEP_IMPROVE;renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-edit-rule]').forEach(b=>{b.onclick=()=>{guideLoadRuleForEdit(Number(b.dataset.guideEditRule),2);};});
+    document.querySelectorAll('[data-guide-edit-rule-confirm]').forEach(b=>{b.onclick=()=>{guideLoadRuleForEdit(Number(b.dataset.guideEditRuleConfirm),GUIDE_STEP_CONFIRM);};});
+    document.querySelectorAll('[data-guide-delete-rule]').forEach(b=>{b.onclick=()=>{guideDeleteRule(Number(b.dataset.guideDeleteRule));};});
+    document.querySelectorAll('[data-guide-new-rule]').forEach(b=>{b.onclick=()=>{guideApplyDraftRule();guideResetDraftForNewRule();guideStep=2;toast('別のルールを追加します');renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-result-action]').forEach(b=>{b.onclick=()=>{
+      const act=b.dataset.guideResultAction;
+      if(act==='run'){guideApplyAndGoRun();return;}
+      if(act==='add'){guideApplyDraftRule();guideResetDraftForNewRule();guideStep=2;toast('別のルールを追加します');renderGuideWizard();return;}
+      if(act==='improve'){guideStep=GUIDE_STEP_IMPROVE;renderGuideWizard();return;}
+    };});
+    document.querySelectorAll('[data-guide-improve]').forEach(b=>{b.onclick=()=>{
+      guideSetAdvice(b.dataset.guideImprove);
+      const a=b.dataset.guideAdjust;
+      if(a==='wait+30')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)+30,0,5000);
+      if(a==='wait-30')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)-30,0,5000);
+      guideStep=Number(b.dataset.guideTarget)||7;
+      renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-jump]').forEach(b=>{b.onclick=()=>{guideStep=Number(b.dataset.guideJump)||0;renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-adjust]').forEach(b=>{b.onclick=()=>{
+      const a=b.dataset.guideAdjust;
+      if(a==='wait+30')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)+30,0,5000);
+      if(a==='wait-30')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)-30,0,5000);
+      guideStep=7;renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-close-save]').forEach(b=>{b.onclick=()=>{closeGuideWizardScreen();setWorkspaceView('run');toast('必要なら左メニューの「本体へ保存」で保存してください');};});
+  }
+  function renderGuideWizard(){
+    guideClampDraft();
+    const title=$('guideWizardTitle'), label=$('guideWizardStepLabel'), body=$('guideWizardBody'), bar=$('guideWizardProgressBar'), next=$('guideWizardNext'), back=$('guideWizardBack'), mini=$('guideWizardMiniSummary');
+    if(title)title.textContent=guideStep>=GUIDE_STEP_IMPROVE?'改善提案':'かんたん設定';
+    if(label)label.textContent=`Step ${Math.min(guideStep+1,GUIDE_STEP_COUNT)} / ${GUIDE_STEP_COUNT}`;
+    if(mini)mini.innerHTML=guideMiniSummary();
+    if(bar)bar.style.width=(Math.min(guideStep+1,GUIDE_STEP_COUNT)/GUIDE_STEP_COUNT*100)+'%';
+    if(body){
+      body.innerHTML=guideStepHtml();
+      if(guideAdvice && guideStep<GUIDE_STEP_IMPROVE)body.innerHTML=guideAdviceBannerHtml()+body.innerHTML;
+    }
+    if(back)back.disabled=guideStep===0;
+    if(next){
+      next.disabled=!guideValidateStep();
+      if(guideStep===GUIDE_STEP_CONFIRM)next.textContent='ルールに反映して走行へ';
+      else if(guideStep===GUIDE_STEP_RUN)next.textContent='結果入力へ';
+      else if(guideStep===GUIDE_STEP_RESULT)next.textContent='次へ';
+      else if(guideStep===GUIDE_STEP_RESULT_MENU)next.textContent='接続・走行画面へ';
+      else if(guideStep>=GUIDE_STEP_IMPROVE)next.textContent='接続・走行画面へ';
+      else next.textContent='次へ';
+    }
+    guideBindDynamicInputs();
+    refreshGuideConnectionStatus();
+  }
+  function guideBuildRuleFromDraft(){
+    guideClampDraft();
+    const pattern=[...(guideDraft.originSegments||[])];
+    if(pattern.length===0)throw new Error('起点セクションが未選択です');
+    const r=defaultRule(pattern);
+    r.actions=[];
+    if(guideDraft.waitMs>0)r.actions.push({type:ACTION.WAIT,durationMs:guideDraft.waitMs,strength:0});
+    if(guideDraft.actionKind==='brake'||guideDraft.actionKind==='brake_speed')r.actions.push({type:ACTION.BRAKE,durationMs:guideDraft.brakeMs,strength:0});
+    if(guideDraft.actionKind==='speed'||guideDraft.actionKind==='brake_speed')r.actions.push({type:ACTION.SPEED,durationMs:guideDraft.speedMs,strength:pctToDuty(guideDraft.speedPct)});
+    if(r.actions.length===0)r.actions.push({type:ACTION.BRAKE,durationMs:250,strength:0});
+    if(guideDraft.trigger==='odd')r.triggerMode=TRIG.ODD;
+    else if(guideDraft.trigger==='even')r.triggerMode=TRIG.EVEN;
+    else if(guideDraft.trigger==='onlyN'){
+      r.triggerMode=TRIG.EVERY_N;
+      r.triggerN=clamp(Number(guideDraft.originCountPerLap)||1,1,255);
+      r.triggerPhase=clamp(Number(guideDraft.triggerN)||1,1,r.triggerN);
+    }
+    else r.triggerMode=TRIG.EVERY;
+    if((pattern||[]).some(s=>s===SEG.LEFT_HOLD||s===SEG.RIGHT_HOLD)){
+      r.curveLongMs=clamp(Number(guideDraft.curveHoldMs)||100,30,1200);
+    }
+    r.priority=120;
+    ensureRuleDefaults(r);
+    r._guideMeta=guideDraftMeta();
+    return r;
+  }
+  function guideApplyDraftRule(){
+    guideClampDraft();
+    guideApplyNormalSpeed();
+    const r=guideBuildRuleFromDraft();
+    if(guideDraft.ruleIndex==null || guideDraft.ruleIndex<0 || guideDraft.ruleIndex>=guideRuleBook.length){
+      guideRuleBook.push(r);
+      guideDraft.ruleIndex=guideRuleBook.length-1;
+    }else{
+      guideRuleBook[guideDraft.ruleIndex]=r;
+    }
+    // v4.21-r33: かんたん設定では、ここで作ったルールセットだけを走行へ反映する。
+    // 以前に通常画面で作ったルールは混ぜないが、かんたん設定内で追加した2本目・3本目は維持する。
+    guideSyncRuntimeRules();
+    toast(`かんたん設定のルールセット ${rules.length}件を反映しました。`);
+  }
+  function guideApplyAndGoRun(){
+    guideApplyDraftRule();
+    guideClearAdvice();
+    guideFixMode=false;
+    guideDraft.lastResult='';
+    guideStep=GUIDE_STEP_RUN;
+    renderGuideWizard();
+  }
+  function guideNext(){
+    if(!guideValidateStep()){toast('この画面の選択を完了してください');return;}
+    if(guideFixMode && [5,GUIDE_STEP_CURVE_HOLD,GUIDE_STEP_TRIGGER,GUIDE_STEP_WAIT,GUIDE_STEP_BRAKE,GUIDE_STEP_SPEED].includes(guideStep)){guideStep=GUIDE_STEP_CONFIRM;renderGuideWizard();return;}
+    if(guideStep===5){guideStep=guideStepAfterOrigin();renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_CURVE_HOLD){guideStep=GUIDE_STEP_TRIGGER;renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_WAIT){guideStep=guideStepAfterWait();renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_BRAKE){guideStep=guideStepAfterBrake();renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_SPEED){guideStep=GUIDE_STEP_CONFIRM;renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_CONFIRM){guideApplyAndGoRun();return;}
+    if(guideStep===GUIDE_STEP_RUN){guideStep=GUIDE_STEP_RESULT;renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_RESULT){guideStep=GUIDE_STEP_RESULT_MENU;renderGuideWizard();return;}
+    if(guideStep===GUIDE_STEP_RESULT_MENU){guideApplyAndGoRun();return;}
+    if(guideStep>=GUIDE_STEP_IMPROVE){guideApplyAndGoRun();return;}
+    guideStep++;renderGuideWizard();
+  }
+  function guideBack(){if(guideStep>0){guideStep=guideBackTarget();renderGuideWizard();}}
+  function initGuideWizard(){
+    const start=$('guideStartWizard');if(start)start.onclick=openGuideWizardScreen;
+    const close=$('guideWizardClose');if(close)close.onclick=closeGuideWizardScreen;
+    const next=$('guideWizardNext');if(next)next.onclick=guideNext;
+    const back=$('guideWizardBack');if(back)back.onclick=guideBack;
+  }
+
+    const WORKSPACE_SIDEBAR_WIDTH_KEY='mini4ai-workspace-sidebar-width-v1';
   const HEADER_SIDE_WIDTH_KEY='mini4ai-header-side-width-v1';
   function clampLayoutPx(v,min,max){return Math.max(min,Math.min(max,v));}
   function setCssPxVar(name,value){document.documentElement.style.setProperty(name,Math.round(value)+'px');}
@@ -9299,6 +10148,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   // details系カードは閉じた状態でも文言が「小さく閉じる」のままになる。
   initRulesConfigCollapse();
   initDetailsCollapse();
+  initGuideWizard();
   initWorkspaceLayout();
   initResizableLayout();
   initHeaderDetailPanel();
@@ -9923,7 +10773,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r16 race console: 表示専用の追加フック。
+  // v4.21-r33 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
