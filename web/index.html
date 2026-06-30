@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r33 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r37 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -3026,7 +3026,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
 
 
-/* ---- Guided setup full-screen wizard v4.21-r33 ---- */
+/* ---- Guided setup full-screen wizard v4.21-r37 ---- */
 .guide-entry-card{min-height:0}
 .guide-entry-panel{border:1px solid rgba(76,201,255,.24);border-radius:18px;background:linear-gradient(135deg,rgba(76,201,255,.10),rgba(180,139,255,.05));padding:20px;display:grid;gap:12px;max-width:760px}
 .guide-entry-panel h3{margin:0;font-size:22px;color:var(--ink)}
@@ -3096,6 +3096,13 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 .guide-rule-manage-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 6px;font-weight:950;color:var(--ink)}
 .guide-rule-manage-hint{font-size:13px;line-height:1.65;color:var(--ink-soft);font-weight:760;margin:4px 0 8px}
 .guide-rule-count{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(76,201,255,.34);border-radius:999px;padding:4px 9px;margin-left:6px;background:rgba(76,201,255,.08);font-size:12px;font-weight:950;color:var(--neon-cyan)}
+.guide-log-check{border:1px solid rgba(76,201,255,.30);border-radius:16px;padding:12px 14px;margin:12px 0;background:linear-gradient(135deg,rgba(76,201,255,.08),rgba(4,8,24,.42));color:var(--ink);font-weight:820;line-height:1.65}
+.guide-log-check>b{display:block;color:var(--neon-cyan);font-size:14px;margin-bottom:4px}
+.guide-log-check p{margin:2px 0 10px;color:var(--ink-soft);font-size:13px;font-weight:780}
+.guide-log-row{border:1px solid rgba(46,230,168,.30);border-radius:13px;background:rgba(46,230,168,.055);padding:9px 10px;margin:8px 0;font-size:13px}
+.guide-log-row.warn{border-color:rgba(255,194,74,.54);background:rgba(255,194,74,.09);color:#fff6d6}
+.guide-log-row span{color:var(--ink-soft)}
+.guide-log-row.warn span{color:#fff6d6}
 .guide-speed-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}
 .guide-speed-option{text-align:center;justify-content:center;min-height:70px}
 .guide-speed-option b{font:900 22px/1 "JetBrains Mono",monospace}
@@ -3189,7 +3196,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r33 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r37 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
@@ -3385,7 +3392,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r33</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r37</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -3738,6 +3745,39 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   let selectedLogIndex=-1;
   let isConnecting=false;
   let disconnectHandler=null;
+  let bleConnectSlowTimer=0;
+  let bleConnectVerySlowTimer=0;
+  let bleLastError='';
+  const BLE_GATT_CONNECT_TIMEOUT_MS=12000;
+  const BLE_SERVICE_TIMEOUT_MS=8000;
+  const bleSleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  function withTimeout(promise, ms, message){
+    let timer=0;
+    const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms);});
+    return Promise.race([promise,timeout]).finally(()=>clearTimeout(timer));
+  }
+  function clearBleSlowTimers(){
+    if(bleConnectSlowTimer){clearTimeout(bleConnectSlowTimer);bleConnectSlowTimer=0;}
+    if(bleConnectVerySlowTimer){clearTimeout(bleConnectVerySlowTimer);bleConnectVerySlowTimer=0;}
+  }
+  function startBleSlowTimers(stage){
+    clearBleSlowTimers();
+    bleConnectSlowTimer=setTimeout(()=>{
+      if(isConnecting){
+        setConnecting(true, stage==='chooser'?'接続先を選択中…':'BLE接続に時間がかかっています…');
+        toast(stage==='chooser'?'デバイス選択が出ない場合は、Chrome/Edgeで開き、基板の電源を入れ直してください。':'接続に時間がかかっています。失敗した場合は「BLEリセット」後に再接続してください。');
+      }
+    },8000);
+    bleConnectVerySlowTimer=setTimeout(()=>{
+      if(isConnecting){
+        setConnecting(true,'BLE接続が長引いています…');
+        toast('長引く場合は、ミニ四駆側の電源を入れ直し、ブラウザのBluetooth選択画面を一度閉じてから再接続してください。');
+      }
+    },18000);
+  }
+  function disconnectDeviceOnly(){
+    try{ if(device && device.gatt && device.gatt.connected)device.gatt.disconnect(); }catch(_){ }
+  }
   // v3.13-telemetry-chart: low-rate board telemetry history for voltage/temp charts.
   // v3.14-telemetry-zoom: keep up to 10 minutes and let the horizontal axis zoom.
   // v3.39: firmware telemetry is ~20Hz; add 5s view for dense voltage/sag transients.
@@ -4024,6 +4064,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(typeof refreshGuideConnectionStatus==='function')refreshGuideConnectionStatus();
   }
   function setConnecting(on,label='BLE接続中…'){
+    if(!on)clearBleSlowTimers();
     const ind=$('btnConnect');
     if(!ind)return;
     ind.classList.toggle('connecting',!!on);
@@ -6225,60 +6266,89 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(isConnecting){toast('BLE接続処理中です');return;}
     if(isBleReady()){toast('すでにBLE接続済みです');return;}
     isConnecting=true;
+    bleLastError='';
     setConnecting(true,'接続先を選択…');
+    startBleSlowTimers('chooser');
     clearBleChannels();
     try{
       if(device && disconnectHandler){
         try{device.removeEventListener('gattserverdisconnected',disconnectHandler)}catch(_){ }
       }
       device=await navigator.bluetooth.requestDevice({filters:[{services:[UUID.service]},{namePrefix:'MiniYonAI'},{namePrefix:'Mini4AI'}],optionalServices:[UUID.service]});
-      setConnecting(true,'GATT接続中…');
+      clearBleSlowTimers();
       disconnectHandler=handleGattDisconnected;
       device.addEventListener('gattserverdisconnected',disconnectHandler);
 
-      server=await device.gatt.connect();
-      if(!server || !server.connected)throw new Error('GATT接続に失敗しました');
+      let lastErr=null;
+      for(let attempt=1;attempt<=3;attempt++){
+        try{
+          clearBleChannels();
+          if(device && device.gatt && device.gatt.connected){
+            try{device.gatt.disconnect()}catch(_){ }
+            await bleSleep(350);
+          }
+          const retryLabel=attempt===1?'':'（再試行 '+attempt+'/3）';
+          setConnecting(true,'GATT接続中…'+retryLabel);
+          startBleSlowTimers('gatt');
+          server=await withTimeout(device.gatt.connect(),BLE_GATT_CONNECT_TIMEOUT_MS,'GATT接続がタイムアウトしました');
+          if(!server || !server.connected)throw new Error('GATT接続に失敗しました');
 
-      setConnecting(true,'サービス取得中…');
-      service=await server.getPrimaryService(UUID.service);
-      const requiredChars=['command','status','seg','speed','params','rules','bulk'];
-      for(const k of requiredChars){ch[k]=await service.getCharacteristic(UUID[k])}
+          setConnecting(true,'サービス取得中…'+retryLabel);
+          service=await withTimeout(server.getPrimaryService(UUID.service),BLE_SERVICE_TIMEOUT_MS,'BLEサービス取得がタイムアウトしました');
+          const requiredChars=['command','status','seg','speed','params','rules','bulk'];
+          for(const k of requiredChars){ch[k]=await service.getCharacteristic(UUID[k])}
 
-      setConnecting(true,'通知を準備中…');
-      await ch.status.startNotifications();
-      ch.status.addEventListener('characteristicvaluechanged',onStatus);
-      await ch.seg.startNotifications();
-      ch.seg.addEventListener('characteristicvaluechanged',onSeg);
-      await ch.bulk.startNotifications();
-      ch.bulk.addEventListener('characteristicvaluechanged',onBulk);
+          setConnecting(true,'通知を準備中…'+retryLabel);
+          await ch.status.startNotifications();
+          ch.status.addEventListener('characteristicvaluechanged',onStatus);
+          await ch.seg.startNotifications();
+          ch.seg.addEventListener('characteristicvaluechanged',onSeg);
+          await ch.bulk.startNotifications();
+          ch.bulk.addEventListener('characteristicvaluechanged',onBulk);
 
-      try{
-        ch.telemetry=await service.getCharacteristic(UUID.telemetry);
-        await ch.telemetry.startNotifications();
-        ch.telemetry.addEventListener('characteristicvaluechanged',onTelemetry);
-      }catch(e){
-        ch.telemetry=null;
-        setTelemetryUnavailable();
-        console.warn('telemetry characteristic unavailable',e);
+          try{
+            ch.telemetry=await service.getCharacteristic(UUID.telemetry);
+            await ch.telemetry.startNotifications();
+            ch.telemetry.addEventListener('characteristicvaluechanged',onTelemetry);
+          }catch(e){
+            ch.telemetry=null;
+            setTelemetryUnavailable();
+            console.warn('telemetry characteristic unavailable',e);
+          }
+          try{
+            ch.adaptiveBrake=await service.getCharacteristic(UUID.adaptiveBrake);
+          }catch(e){
+            ch.adaptiveBrake=null;
+            console.warn('adaptive brake characteristic unavailable',e);
+          }
+          try{
+            ch.firmwareInfo=await service.getCharacteristic(UUID.firmwareInfo);
+          }catch(e){
+            ch.firmwareInfo=null;
+            console.warn('firmware info characteristic unavailable',e);
+          }
+          try{
+            ch.deviceName=await service.getCharacteristic(UUID.deviceName);
+          }catch(e){
+            ch.deviceName=null;
+            console.warn('device name characteristic unavailable',e);
+          }
+          lastErr=null;
+          break;
+        }catch(connectErr){
+          lastErr=connectErr;
+          bleLastError=connectErr && connectErr.message ? connectErr.message : String(connectErr);
+          console.warn('BLE connect attempt failed',attempt,connectErr);
+          clearBleChannels();
+          disconnectDeviceOnly();
+          if(attempt<3){
+            setConnecting(true,'BLE再接続を試行中… '+attempt+'/2');
+            await bleSleep(700*attempt);
+          }
+        }
       }
-      try{
-        ch.adaptiveBrake=await service.getCharacteristic(UUID.adaptiveBrake);
-      }catch(e){
-        ch.adaptiveBrake=null;
-        console.warn('adaptive brake characteristic unavailable',e);
-      }
-      try{
-        ch.firmwareInfo=await service.getCharacteristic(UUID.firmwareInfo);
-      }catch(e){
-        ch.firmwareInfo=null;
-        console.warn('firmware info characteristic unavailable',e);
-      }
-      try{
-        ch.deviceName=await service.getCharacteristic(UUID.deviceName);
-      }catch(e){
-        ch.deviceName=null;
-        console.warn('device name characteristic unavailable',e);
-      }
+      clearBleSlowTimers();
+      if(lastErr)throw lastErr;
 
       setConn(true);
       await refreshFirmwareInfo();
@@ -6298,27 +6368,38 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       }
     }catch(e){
       const msg=e && e.message ? e.message : String(e);
+      bleLastError=msg;
       setConnecting(false);
       clearBleChannels();
       setConn(false);
-      if(device && device.gatt && device.gatt.connected){
-        try{device.gatt.disconnect()}catch(_){ }
-      }
+      disconnectDeviceOnly();
       if(/User cancelled|cancelled/i.test(msg))throw new Error('BLE接続をキャンセルしました');
-      if(/GATT Server is disconnected|Cannot retrieve services|NetworkError/i.test(msg)){
-        throw new Error('BLE接続に失敗しました。基板の電源を入れ直し、ブラウザ側のBluetooth接続も一度解除してから再接続してください。詳細: '+msg);
+      if(/GATT|Cannot retrieve services|NetworkError|タイムアウト|Bluetooth|disconnected/i.test(msg)){
+        throw new Error('BLE接続に失敗しました。接続画面の「BLEリセット」を押すか、ミニ四駆側の電源を入れ直してから再接続してください。詳細: '+msg);
       }
       throw e;
     }finally{
       isConnecting=false;
       setConnecting(false);
       if(typeof refreshConnToggle==='function')refreshConnToggle();
+      if(typeof refreshGuideConnectionStatus==='function')refreshGuideConnectionStatus();
     }
+  }
+  async function resetBleConnection(){
+    setConnecting(false);
+    bleLastError='';
+    clearBleSlowTimers();
+    try{clearBleChannels();}catch(_){ }
+    disconnectDeviceOnly();
+    await bleSleep(500);
+    setConn(false);
+    toast('BLE接続状態をリセットしました。ミニ四駆側の電源を入れ直してから再接続すると安定しやすいです。');
   }
   function disconnect(){
     setConnecting(false);
+    bleLastError='';
     clearBleChannels();
-    if(device && device.gatt && device.gatt.connected)device.gatt.disconnect();
+    disconnectDeviceOnly();
     setConn(false);
   }
   function pad2(n){return String(n).padStart(2,'0')}
@@ -9267,8 +9348,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
 
 
-  // ===== v4.21-r33 Guided setup wizard: full-screen, one decision per screen, iterative correction loop =====
-  const GUIDE_STEP_COUNT=16;
+  // ===== v4.21-r37 Guided setup wizard: full-screen, one decision per screen, iterative correction loop =====
+  const GUIDE_STEP_COUNT=17;
   const GUIDE_STEP_CURVE_HOLD=6;
   const GUIDE_STEP_TRIGGER=7;
   const GUIDE_STEP_WAIT=8;
@@ -9279,6 +9360,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   const GUIDE_STEP_RESULT=13;
   const GUIDE_STEP_RESULT_MENU=14;
   const GUIDE_STEP_IMPROVE=15;
+  const GUIDE_STEP_RECOG_ADJUST=16;
   const guideDraft={
     normalPct:50,
     actionKind:'brake',
@@ -9303,7 +9385,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   let guideAdvice=null;
   let guideFixMode=false;
   const GUIDE_ADVICE_TEXT={
-    nofire:{title:'改善: 起点条件を短くする',body:'起点セクションを1つ、必要でも2つまでに減らします。停止後ログに実際に出ているセクションだけを使ってください。'},
+    nofire:{title:'改善: 起点条件を短くする / 認識を確認する',body:'起点セクションを1つ、必要でも2つまでに減らします。停止後ログでその起点が何回認識されたかを確認し、足りない場合はかんたん設定内の認識調整を使います。'},
     early:{title:'改善: 待機時間を増やす',body:'アクションが早すぎます。ブレーキ/低出力の前に入れる待機時間を+20〜50msして、もう一度走らせます。'},
     lateOrigin:{title:'改善: 手前の起点に変える',body:'目的位置を見てからブレーキしていると遅れます。さらに手前の特徴的なセクションを起点にしてください。'},
     lateWait:{title:'改善: 待機時間を減らす',body:'起点は合っているが遅い場合は、待機時間を-20〜50msします。待機なしでも遅い場合は、さらに手前の起点に変えます。'},
@@ -9543,6 +9625,96 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     const has=(guideRuleBook||[]).length>0;
     return `<div class="guide-wizard-summary"><div class="guide-rule-manage-head"><span>かんたん設定のルール一覧</span><span class="guide-rule-count">${guideRuleBook.length}件</span></div><div class="guide-rule-manage-hint">2件目・3件目を作った後でも、ここから編集するルールを選べます。どのルールを直しているか分からなくなったら、まずこの一覧に戻ってください。</div>${has?guideRuleBookHtml({actions:true}):'<div class="guide-wizard-note">まだ追加済みルールはありません。</div>'}<div class="guide-rule-actions"><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">このルールセットで走る</button></div></div>`;
   }
+  function guideActiveRulesForLog(){
+    const list=(guideRuleBook&&guideRuleBook.length)?guideRuleBook:[];
+    if(list.length)return list;
+    try{return [guideBuildRuleFromDraft()];}catch(e){return [];}
+  }
+  function guidePhysicalLogGroups(){
+    try{
+      if(typeof getLapLogGroups==='function')return getLapLogGroups();
+    }catch(e){}
+    return (logRows||[])
+      .map((r,i)=>({seg:Number(r&&r.seg),start:i,end:i,rows:[r]}))
+      .filter(g=>g.rows[0] && Number(g.rows[0].act)===ACTION.NONE && g.seg && g.seg!==SEG.NONE && g.seg!==SEG.LAP && g.seg!==SEG.VOLTAGE && g.seg!==SEG.RUN_START && g.seg!==SEG.RUN_STOP);
+  }
+  function guideCountPatternInStoppedLog(pattern){
+    const pat=(pattern||[]).map(Number).filter(s=>s!=null);
+    if(!pat.length)return 0;
+    const groups=guidePhysicalLogGroups();
+    let count=0;
+    for(let i=0;i<=groups.length-pat.length;i++){
+      let ok=true;
+      for(let j=0;j<pat.length;j++){
+        if(Number(groups[i+j].seg)!==Number(pat[j])){ok=false;break;}
+      }
+      if(ok)count++;
+    }
+    return count;
+  }
+  function guideLapCountFromStoppedLog(){
+    const laps=(logRows||[]).filter(r=>Number(r&&r.seg)===SEG.LAP && Number(r&&r.dur)>0).length;
+    return laps>0?laps:0;
+  }
+  function guideRuleLogAnalysisHtml(){
+    const hasLog=(logRows||[]).some(r=>r && Number(r.seg)!==SEG.VOLTAGE);
+    if(!hasLog){
+      return `<div class="guide-log-check"><b>停止後ログの認識チェック</b><p>停止後ログを取得すると、起点として使おうとしているセクションが実際に何回認識されたかをここに表示します。</p><div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-action="log">停止後ログを取得</button></div></div>`;
+    }
+    const lapCount=guideLapCountFromStoppedLog();
+    const rulesForLog=guideActiveRulesForLog();
+    if(!rulesForLog.length){
+      return `<div class="guide-log-check"><b>停止後ログの認識チェック</b><p>起点ルールがまだありません。起点セクションを選ぶと、ログ上の認識回数を確認できます。</p></div>`;
+    }
+    const rows=rulesForLog.map((r,i)=>{
+      const meta=r._guideMeta||guideInferMetaFromRule(r,i)||{};
+      const pat=(r.pattern||meta.originSegments||[]).filter(s=>s!=null);
+      const count=guideCountPatternInStoppedLog(pat);
+      const patLabel=pat.map(s=>shortSegLabel(s)).join(' → ')||'未設定';
+      const perLap=Number(meta.originCountPerLap)||Number(r.triggerN)||0;
+      const phase=Number(meta.triggerN)||Number(r.triggerPhase)||0;
+      const trig=(meta.trigger==='onlyN'||r.triggerMode===TRIG.EVERY_N)
+        ? `設定: 1周に${perLap||'?'}回あるうち${phase||'?'}番目だけ`
+        : `設定: ${triggerModeText(r.triggerMode,r.triggerN,r.triggerPhase)}`;
+      const expected=(lapCount&&perLap)?` / 期待目安 ${perLap*lapCount}回（${lapCount}周×${perLap}回）`:'';
+      let cls='ok', note='';
+      if(count===0){cls='warn';note='停止後ログに起点が出ていません。起点を変えるか、認識調整を確認してください。';}
+      else if(lapCount&&perLap&&count<perLap*lapCount){cls='warn';note='想定より少ない可能性があります。認識調整、または起点の選び直しを検討してください。';}
+      else {note='停止後ログでは起点候補を確認できています。';}
+      return `<div class="guide-log-row ${cls}"><b>ルール${i+1}: ${patLabel}</b><br>停止後ログで ${count}回 認識${expected}<br>${trig}<br><span>${note}</span></div>`;
+    }).join('');
+    return `<div class="guide-log-check"><b>停止後ログの認識チェック</b><p>「発動しない」「違う場所でも発動する」場合は、まずここで起点セクションの認識回数を確認します。</p>${rows}<div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-action="log">停止後ログを再取得</button><button type="button" class="btn" data-guide-result-action="recog">認識調整を開く</button></div></div>`;
+  }
+  function guideSimpleRecognitionAdjustHtml(){
+    const straight=Number(($('straightHold')||{value:100}).value)||100;
+    const c90=Number(($('curveHold90Ms')||{value:100}).value)||100;
+    const c180=Number(($('curveHold180Ms')||{value:200}).value)||200;
+    const cLong=Number(($('curveHoldLongMs')||{value:300}).value)||300;
+    const curveLong=Number(($('curveLong')||{value:100}).value)||100;
+    const straightNote = Math.abs(straight-100)<1
+      ? '<div class="guide-wizard-good"><b>直線継続:</b> 標準の100msです。</div>'
+      : `<div class="guide-wizard-note"><b>直線継続は現在 ${straight}ms です。</b><br>これは以前の認識調整値が残っている状態です。標準は100msです。迷ったら100msに戻してから試してください。<div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-reset-straight="1">直線継続を100msに戻す</button></div></div>`;
+    return `<h3>認識調整を確認します。</h3><p>かんたん設定内で、起点に使う継続判定だけを調整します。うまく発動しない場合は、停止後ログの認識回数と合わせて確認してください。</p>${guideRuleLogAnalysisHtml()}${straightNote}<div class="guide-param-grid">${guideNumberHtml('guideAdjStraightHoldMs',straight,'ms',20,2000,10,'直線継続の判定時間（現在値）')}${guideNumberHtml('guideAdjCurveLongMs',curveLong,'ms',30,1200,10,'全体ログ用のカーブ継続')}</div><div class="guide-param-grid">${guideNumberHtml('guideAdjCurve90Ms',c90,'ms',30,1200,10,'90度カーブ以上')}${guideNumberHtml('guideAdjCurve180Ms',c180,'ms',30,1200,10,'180度カーブ以上')}${guideNumberHtml('guideAdjCurveLongMs2',cLong,'ms',30,1200,10,'それ以上の長いカーブ')}</div><div class="guide-wizard-note"><b>標準値:</b> 直線継続は100msから始めます。画面上の値は現在本体/ブラウザに残っている認識調整値です。左C/右C単発はウェーブ入口・出口でも誤反応しやすいため、基本は左/右カーブ継続を使います。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-apply-recog="1">調整を反映して接続・走行へ</button><button type="button" class="btn btn-secondary" data-guide-jump="${GUIDE_STEP_RESULT_MENU}">結果メニューへ戻る</button></div>`;
+  }
+  function guideSetNumberInputValue(id,value){const el=$(id);if(el){el.value=String(value);el.dispatchEvent(new Event('change',{bubbles:true}));}}
+  function guideApplySimpleRecognitionAdjust(){
+    const read=(id,min,max,def)=>clamp(Number($(id)?.value)||def,min,max);
+    const straight=read('guideAdjStraightHoldMs',20,2000,100);
+    const curveLong=read('guideAdjCurveLongMs',30,1200,100);
+    const c90=read('guideAdjCurve90Ms',30,1200,100);
+    const c180=read('guideAdjCurve180Ms',30,1200,200);
+    const cLong=read('guideAdjCurveLongMs2',30,1200,300);
+    guideSetNumberInputValue('straightHold',straight);
+    guideSetNumberInputValue('lapStraightHoldMs',straight);
+    guideSetNumberInputValue('curveLong',curveLong);
+    guideSetNumberInputValue('lapCurveLongMs',curveLong);
+    guideSetNumberInputValue('curveHold90Ms',c90);
+    guideSetNumberInputValue('curveHold180Ms',c180);
+    guideSetNumberInputValue('curveHoldLongMs',cLong);
+    saveLocal();
+    toast('認識調整を反映しました。接続・走行画面へ戻ります。');
+    guideApplyAndGoRun();
+  }
   function guideSelectHtml(options, current, setter){
     return `<div class="guide-wizard-options">`+options.map(o=>`<button type="button" class="guide-wizard-option ${o.value===current?'selected':''}" data-guide-set="${setter}" data-guide-value="${o.value}"><b>${o.label}</b>${o.hint?`<span>${o.hint}</span>`:''}</button>`).join('')+`</div>`;
   }
@@ -9616,6 +9788,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(guideStep===GUIDE_STEP_RESULT)return GUIDE_STEP_RUN;
     if(guideStep===GUIDE_STEP_RESULT_MENU)return GUIDE_STEP_RESULT;
     if(guideStep===GUIDE_STEP_IMPROVE)return GUIDE_STEP_RESULT_MENU;
+    if(guideStep===GUIDE_STEP_RECOG_ADJUST)return GUIDE_STEP_RESULT_MENU;
     return Math.max(0,guideStep-1);
   }
   function guideStepHtml(){
@@ -9682,7 +9855,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       case GUIDE_STEP_CONFIRM:
         return `<h3>設定したルールを確認します。</h3><p>接続・走行の前に、自然文でもう一度確認してください。複数ルールを追加した場合は、かんたん設定で作ったルールセットだけを走行に使います。</p><div class="guide-wizard-summary"><div><b>通常速度:</b> ${guideDraft.normalPct}%</div><div class="guide-wizard-natural">${guideNaturalSentence()}</div><div class="guide-wizard-note"><b>重要:</b> 過去に通常画面で作ったルールは混ぜません。かんたん設定で追加したルールだけを反映します。</div><div><b>この内容でルール設計に反映し、接続・走行画面へ進みます。</b></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-confirm-run="1">接続・走行画面へ進む</button></div></div>`;
       case GUIDE_STEP_RUN:
-        return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>今回のルールセット</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、かんたん設定で作ったルールセットだけを一時適用します。過去の通常ルールは今回の走行には使いません。</div></div><div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint">接続状態は上の表示で確認できます。接続できない場合は、XIAO MG24 Senseが起動していること、ブラウザがChrome/Edgeであることを確認してください。</div></div>`;
+        return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>今回のルールセット</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、かんたん設定で作ったルールセットだけを一時適用します。過去の通常ルールは今回の走行には使いません。</div></div>${guideRuleLogAnalysisHtml()}<div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="resetble">BLEリセット</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint"><b>接続が遅い場合:</b> BLEリセット → ミニ四駆側の電源入れ直し → マシン接続、の順で試してください。Chrome/Edge以外では接続できません。</div></div>`;
       case GUIDE_STEP_RESULT:
         return `<h3>走行後、結果を選んでください。</h3><p>もっとも近い結果を選んでください。次の画面で、改善するか、ルールを追加するか、もう一度走るかを選べます。</p>`+guideSelectHtml([
           {value:'ok',label:'思い通りの場所で発動した'},
@@ -9693,28 +9866,58 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         ],guideDraft.lastResult||'','lastResult');
       case GUIDE_STEP_RESULT_MENU:
         return guideResultMenuHtml();
+      case GUIDE_STEP_RECOG_ADJUST:
+        return guideSimpleRecognitionAdjustHtml();
       default:
         return guideImprovementHtml();
     }
   }
+  function guideInlineOriginEditorHtml(){
+    const baseSegs=[SEG.STRAIGHT,SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
+    const segs=guideDraft.showInstantCurves?[SEG.LEFT,SEG.RIGHT,...baseSegs]:baseSegs;
+    const buttons=segs.map(seg=>{
+      const sel=(guideDraft.originSegments||[]).includes(seg);
+      const meta=SEG_META[seg]||['?','不明','seg-system'];
+      return `<button type="button" class="guide-wizard-option guide-seg-option ${sel?'selected':''}" data-guide-seg="${seg}">${guideSegPill(seg)}<span><b>${meta[1]}</b><span>${sel?'選択中。クリックで解除':'クリックした順に起点へ追加'}</span></span></button>`;
+    }).join('');
+    const instantNote=guideDraft.showInstantCurves
+      ? `<div class="guide-wizard-note"><b>単発の左C/右Cを表示中:</b> 誤発動しやすいため、ログでその場所だけに出ているか確認してください。</div>`
+      : `<div class="guide-wizard-note"><b>左C/右C単発は非表示です。</b> 基本は左/右カーブ継続を使います。</div>`;
+    return `<div class="guide-wizard-summary"><b>起点を直接編集</b>${guideSegOrderHtml()}${instantNote}<div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-toggle-instant-curves="1">${guideDraft.showInstantCurves?'単発の左C/右Cを隠す':'上級者向け: 単発の左C/右Cを表示'}</button><button type="button" class="btn btn-secondary" data-guide-keep-first-origin="1">起点を1つに減らす</button></div><div class="guide-wizard-options guide-wizard-two">${buttons}</div></div>`;
+  }
+  function guideInlineTriggerEditorHtml(){
+    return `<div class="guide-wizard-summary"><b>発動回数を直接編集</b><p>違う場所でも発動する場合は、ここで毎回発動をやめて、奇数回・偶数回・N回目に絞ります。</p>${guideSelectHtml([
+      {value:'every',label:'毎回発動する'},
+      {value:'odd',label:'奇数回だけ発動する'},
+      {value:'even',label:'偶数回だけ発動する'},
+      {value:'onlyN',label:'1周のうち指定した番号だけ発動する'}
+    ],guideDraft.trigger,'trigger')}${guideDraft.trigger==='onlyN'?`<div class="guide-param-grid">${guideNumberHtml('guideOriginCountPerLap',guideDraft.originCountPerLap,'回/周',1,20,1,'この起点は1周に何回ありますか？')}${guideNumberHtml('guideTriggerN',guideDraft.triggerN,'番目',1,guideDraft.originCountPerLap,1,'そのうち何番目で発動しますか？')}</div>`:''}</div>`;
+  }
+  function guideResultDirectEditorHtml(result){
+    if(result==='ok'){
+      return `<div class="guide-wizard-good"><b>良い状態です。</b><br>このルールは使えそうです。もう一度走るか、別のルールを追加できます。</div>`;
+    }
+    if(result==='early'){
+      return `<div class="guide-wizard-summary"><b>早すぎた場合の修正</b><p>ブレーキ/低出力の前に入れる待機時間を、この場で増やします。まずは+20〜50msが目安です。</p><div class="guide-param-grid">${guideNumberHtml('guideWaitMs',guideDraft.waitMs,'ms',0,5000,10,'ブレーキ/低出力前の待機時間')}</div><div class="guide-improve-actions"><button type="button" class="btn" data-guide-quick-adjust="wait+20">+20ms</button><button type="button" class="btn success" data-guide-quick-adjust="wait+50">+50ms</button><button type="button" class="btn btn-secondary" data-guide-quick-adjust="wait-20">-20ms</button></div></div>`;
+    }
+    if(result==='late'){
+      return `<div class="guide-wizard-summary"><b>遅すぎた場合の修正</b><p>待機時間を減らすか、目的位置よりさらに手前の起点に変更します。待機なしでも遅い場合は、起点を見直してください。</p><div class="guide-param-grid">${guideNumberHtml('guideWaitMs',guideDraft.waitMs,'ms',0,5000,10,'ブレーキ/低出力前の待機時間')}</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-quick-adjust="wait-50">-50ms</button><button type="button" class="btn" data-guide-quick-adjust="wait-20">-20ms</button><button type="button" class="btn btn-secondary" data-guide-quick-adjust="wait+20">+20ms</button></div></div>${guideInlineOriginEditorHtml()}`;
+    }
+    if(result==='nofire'){
+      return `<div class="guide-wizard-summary"><b>発動しなかった場合の修正</b><p>起点条件が長すぎる、または停止後ログに出ていない起点を使っている可能性があります。この場で起点を短くするか、停止後ログ/認識調整を確認します。</p></div>${guideInlineOriginEditorHtml()}`;
+    }
+    return guideInlineTriggerEditorHtml();
+  }
   function guideResultMenuHtml(){
     const r=guideDraft.lastResult||'ok';
     const label={ok:'思い通りの場所で発動した',nofire:'発動しなかった',early:'早すぎた',late:'遅すぎた / 間に合わなかった',often:'違う場所でも発動した'}[r]||'未選択';
-    const rec={
-      ok:'このルールは使えそうです。次は同じルールでもう一度走るか、別のルールを追加できます。',
-      nofire:'起点条件が長すぎる、または実際の停止後ログに出ていないセクションを使っている可能性があります。',
-      early:'ブレーキ/低出力の前に入れる待機時間を増やすのがおすすめです。',
-      late:'目的位置そのものを認識している場合は、さらに手前の起点に変えるのがおすすめです。起点が合っているなら待機時間を減らします。',
-      often:'毎回発動ではなく、奇数回・偶数回・N回目のみで発動場所を絞るのがおすすめです。'
-    }[r]||'';
-    const improveDisabled=r==='ok'?' disabled':'';
-    return `<h3>次に行う操作を選んでください。</h3><div class="guide-wizard-summary"><b>走行結果:</b> ${label}<br><b>おすすめ:</b> ${rec}</div>${guideRuleManagerHtml()}<div class="guide-improve-actions"><button type="button" class="btn success" data-guide-result-action="improve"${improveDisabled}>現在のルールを改善する</button><button type="button" class="btn" data-guide-result-action="add">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">接続・走行画面へ</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了して保存へ</button></div>`;
+    return `<h3>次に行う操作を選んでください。</h3><div class="guide-wizard-summary"><b>走行結果:</b> ${label}<br><b>ここで直接修正できます。</b> 修正後は「変更を反映して接続・走行へ」を押してください。</div>${guideResultDirectEditorHtml(r)}${guideRuleLogAnalysisHtml()}${guideRuleManagerHtml()}<div class="guide-improve-actions"><button type="button" class="btn success" data-guide-apply-fix-run="1">変更を反映して接続・走行へ</button><button type="button" class="btn" data-guide-result-action="add">別のルールを追加する</button><button type="button" class="btn" data-guide-result-action="recog">認識調整を開く</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">修正せず接続・走行画面へ</button><button type="button" class="btn success" data-guide-save-device="1">本体へ保存</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了</button></div>`;
   }
   function guideImprovementHtml(){
     const r=guideDraft.lastResult||'ok';
-    if(r==='ok')return `<h3>良い状態です。</h3><div class="guide-wizard-good">このルールは使えそうです。続けて別の場所用のルールを追加するか、同じルールセットでもう一度走れます。</div><div class="guide-wizard-summary"><b>現在のルールセット</b>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">電源OFF後やスタンドアローン起動でも使う場合は、最後に左メニューの「本体へ保存」を押してください。</div></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-jump="12">同じルールセットでもう一度走る</button><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了して保存へ</button></div>`;
-    if(r==='nofire')return `<h3>次の改善: 起点条件を短くします。</h3><p>複数セグメントをつなげすぎている可能性があります。まず起点を1つに減らし、停止後ログに実際に出ているセクションだけを使ってください。</p><div class="guide-wizard-note">おすすめ: 5セグメントのような長い条件は避け、1〜2セグメントから始めます。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="nofire" data-guide-target="5">起点を見直す</button><button type="button" class="btn btn-secondary" data-guide-jump="12">もう一度走る</button></div>`;
-    if(r==='early')return `<h3>次の改善: ブレーキ前の待機時間を増やします。</h3><p>起点は合っているが、アクション開始が早い状態です。ブレーキの前に入れている待機時間を少し増やしてください。</p><div class="guide-wizard-good">おすすめ: 待機時間を +20〜50ms して再走行します。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="early" data-guide-adjust="wait+30">待機時間を増やす</button><button type="button" class="btn btn-secondary" data-guide-improve="early" data-guide-target="8">待機時間を直接調整</button></div>`;
+    if(r==='ok')return `<h3>良い状態です。</h3><div class="guide-wizard-good">このルールは使えそうです。続けて別の場所用のルールを追加するか、同じルールセットでもう一度走れます。</div><div class="guide-wizard-summary"><b>現在のルールセット</b>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">電源OFF後やスタンドアローン起動でも使う場合は、この画面の「本体へ保存」から保存できます。</div></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-jump="12">同じルールセットでもう一度走る</button><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn success" data-guide-save-device="1">本体へ保存</button><button type="button" class="btn btn-secondary" data-guide-close-save="1">終了</button></div>`;
+    if(r==='nofire')return `<h3>次の改善: 起点条件を短くします。</h3><p>複数セグメントをつなげすぎている可能性があります。まず起点を1つに減らし、停止後ログに実際に出ているセクションだけを使ってください。</p><div class="guide-wizard-note">おすすめ: 5セグメントのような長い条件は避け、1〜2セグメントから始めます。このアドバイスは修正画面にも表示し続けます。</div>${guideRuleLogAnalysisHtml()}<div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="nofire" data-guide-target="5">起点を見直す</button><button type="button" class="btn" data-guide-result-action="recog">認識調整を開く</button><button type="button" class="btn btn-secondary" data-guide-jump="12">もう一度走る</button></div>`;
+    if(r==='early')return `<h3>ブレーキ前の待機時間を修正します。</h3><p>起点は合っているが、アクション開始が早い状態です。ここで待機時間を増やしてから、すぐに再走行できます。</p><div class="guide-wizard-summary"><div class="guide-param-grid">${guideNumberHtml('guideWaitMs',guideDraft.waitMs,'ms',0,5000,10,'ブレーキ/低出力前の待機時間')}</div><div class="guide-improve-actions"><button type="button" class="btn" data-guide-quick-adjust="wait+20">+20ms</button><button type="button" class="btn success" data-guide-quick-adjust="wait+50">+50ms</button><button type="button" class="btn success" data-guide-apply-fix-run="1">変更を反映して接続・走行へ</button></div></div>`;
     if(r==='late')return `<h3>次の改善: 手前の起点か、短い待機にします。</h3><p>目的位置そのものを認識してからブレーキしていると遅れます。ウェーブで止めたい場合は、ウェーブの手前の左/右カーブや直線継続を起点にしてください。</p><div class="guide-wizard-note">すでに手前を起点にしている場合は、待機時間を -20〜50ms します。待機なしで遅い場合は、さらに1つ手前の起点に変えます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="lateOrigin" data-guide-target="5">起点を見直す</button><button type="button" class="btn btn-secondary" data-guide-improve="lateWait" data-guide-adjust="wait-30">待機時間を減らす</button></div>`;
     return `<h3>次の改善: 発動回数を絞ります。</h3><p>同じ起点が複数回出ています。毎回発動から、奇数回・偶数回・N回目のみへ変更してください。</p><div class="guide-wizard-good">おすすめ: 2回目だけ止めたい場合は「1周に何回あるか」と「何番目か」を設定します。左右対称に出る場合は奇数/偶数を試します。このアドバイスは修正画面にも表示し続けます。</div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-improve="often" data-guide-target="7">発動回数を見直す</button><button type="button" class="btn btn-secondary" data-guide-jump="12">もう一度走る</button></div>`;
   }
@@ -9762,8 +9965,10 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     document.querySelectorAll('[data-guide-action]').forEach(b=>{b.onclick=()=>{
       const act=b.dataset.guideAction;
       if(act==='connect'){const c=$('btnConnect'); if(c)c.click();}
+      if(act==='resetble'){resetBleConnection().catch(e=>toast(e.message||String(e)));}
       if(act==='start'){guideApplyDraftRule(); const st=$('btnStart'); if(st)st.click();}
       if(act==='stop'){const sp=$('btnStop'); if(sp)sp.click();}
+      if(act==='log'){const lg=$('btnLog'); if(lg)lg.click(); setTimeout(renderGuideWizard,1400);}
       setTimeout(refreshGuideConnectionStatus,80);
       setTimeout(refreshGuideConnectionStatus,800);
     };});
@@ -9778,6 +9983,20 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       if(act==='run'){guideApplyAndGoRun();return;}
       if(act==='add'){guideApplyDraftRule();guideResetDraftForNewRule();guideStep=2;toast('別のルールを追加します');renderGuideWizard();return;}
       if(act==='improve'){guideStep=GUIDE_STEP_IMPROVE;renderGuideWizard();return;}
+      if(act==='recog'){guideStep=GUIDE_STEP_RECOG_ADJUST;renderGuideWizard();return;}
+    };});
+    document.querySelectorAll('[data-guide-quick-adjust]').forEach(b=>{b.onclick=()=>{
+      const a=b.dataset.guideQuickAdjust;
+      if(a==='wait+20')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)+20,0,5000);
+      if(a==='wait+50')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)+50,0,5000);
+      if(a==='wait-20')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)-20,0,5000);
+      if(a==='wait-50')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)-50,0,5000);
+      renderGuideWizard();
+    };});
+    document.querySelectorAll('[data-guide-apply-fix-run]').forEach(b=>{b.onclick=()=>{guideApplyAndGoRun();};});
+    document.querySelectorAll('[data-guide-keep-first-origin]').forEach(b=>{b.onclick=()=>{
+      if(Array.isArray(guideDraft.originSegments)&&guideDraft.originSegments.length>1){guideDraft.originSegments=guideDraft.originSegments.slice(0,1);}
+      renderGuideWizard();
     };});
     document.querySelectorAll('[data-guide-improve]').forEach(b=>{b.onclick=()=>{
       guideSetAdvice(b.dataset.guideImprove);
@@ -9794,12 +10013,15 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       if(a==='wait-30')guideDraft.waitMs=clamp((Number(guideDraft.waitMs)||0)-30,0,5000);
       guideStep=7;renderGuideWizard();
     };});
-    document.querySelectorAll('[data-guide-close-save]').forEach(b=>{b.onclick=()=>{closeGuideWizardScreen();setWorkspaceView('run');toast('必要なら左メニューの「本体へ保存」で保存してください');};});
+    document.querySelectorAll('[data-guide-close-save]').forEach(b=>{b.onclick=()=>{closeGuideWizardScreen();toast('かんたん設定を終了しました');};});
+    document.querySelectorAll('[data-guide-save-device]').forEach(b=>{b.onclick=()=>{guideApplyDraftRule();requestSaveConfigToDevice().catch(e=>toast(e.message||String(e)));};});
+    document.querySelectorAll('[data-guide-reset-straight]').forEach(b=>{b.onclick=()=>{const el=$('guideAdjStraightHoldMs');if(el)el.value='100';guideSetNumberInputValue('straightHold',100);guideSetNumberInputValue('lapStraightHoldMs',100);saveLocal();toast('直線継続を100msに戻しました');renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-apply-recog]').forEach(b=>{b.onclick=()=>guideApplySimpleRecognitionAdjust();});
   }
   function renderGuideWizard(){
     guideClampDraft();
     const title=$('guideWizardTitle'), label=$('guideWizardStepLabel'), body=$('guideWizardBody'), bar=$('guideWizardProgressBar'), next=$('guideWizardNext'), back=$('guideWizardBack'), mini=$('guideWizardMiniSummary');
-    if(title)title.textContent=guideStep>=GUIDE_STEP_IMPROVE?'改善提案':'かんたん設定';
+    if(title)title.textContent=guideStep===GUIDE_STEP_RECOG_ADJUST?'認識調整':(guideStep>=GUIDE_STEP_IMPROVE?'改善提案':'かんたん設定');
     if(label)label.textContent=`Step ${Math.min(guideStep+1,GUIDE_STEP_COUNT)} / ${GUIDE_STEP_COUNT}`;
     if(mini)mini.innerHTML=guideMiniSummary();
     if(bar)bar.style.width=(Math.min(guideStep+1,GUIDE_STEP_COUNT)/GUIDE_STEP_COUNT*100)+'%';
@@ -9814,6 +10036,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       else if(guideStep===GUIDE_STEP_RUN)next.textContent='結果入力へ';
       else if(guideStep===GUIDE_STEP_RESULT)next.textContent='次へ';
       else if(guideStep===GUIDE_STEP_RESULT_MENU)next.textContent='接続・走行画面へ';
+      else if(guideStep===GUIDE_STEP_RECOG_ADJUST)next.textContent='調整を反映して走行へ';
       else if(guideStep>=GUIDE_STEP_IMPROVE)next.textContent='接続・走行画面へ';
       else next.textContent='次へ';
     }
@@ -9856,7 +10079,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     }else{
       guideRuleBook[guideDraft.ruleIndex]=r;
     }
-    // v4.21-r33: かんたん設定では、ここで作ったルールセットだけを走行へ反映する。
+    // v4.21-r37: かんたん設定では、ここで作ったルールセットだけを走行へ反映する。
     // 以前に通常画面で作ったルールは混ぜないが、かんたん設定内で追加した2本目・3本目は維持する。
     guideSyncRuntimeRules();
     toast(`かんたん設定のルールセット ${rules.length}件を反映しました。`);
@@ -9881,6 +10104,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     if(guideStep===GUIDE_STEP_RUN){guideStep=GUIDE_STEP_RESULT;renderGuideWizard();return;}
     if(guideStep===GUIDE_STEP_RESULT){guideStep=GUIDE_STEP_RESULT_MENU;renderGuideWizard();return;}
     if(guideStep===GUIDE_STEP_RESULT_MENU){guideApplyAndGoRun();return;}
+    if(guideStep===GUIDE_STEP_RECOG_ADJUST){guideApplySimpleRecognitionAdjust();return;}
     if(guideStep>=GUIDE_STEP_IMPROVE){guideApplyAndGoRun();return;}
     guideStep++;renderGuideWizard();
   }
@@ -10773,7 +10997,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r33 race console: 表示専用の追加フック。
+  // v4.21-r37 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
