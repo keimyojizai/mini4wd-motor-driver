@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r37 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r38 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -3026,7 +3026,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
 
 
-/* ---- Guided setup full-screen wizard v4.21-r37 ---- */
+/* ---- Guided setup full-screen wizard v4.21-r38 ---- */
 .guide-entry-card{min-height:0}
 .guide-entry-panel{border:1px solid rgba(76,201,255,.24);border-radius:18px;background:linear-gradient(135deg,rgba(76,201,255,.10),rgba(180,139,255,.05));padding:20px;display:grid;gap:12px;max-width:760px}
 .guide-entry-panel h3{margin:0;font-size:22px;color:var(--ink)}
@@ -3196,7 +3196,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r37 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r38 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
@@ -3392,7 +3392,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         </div>
 
           <div class="card auto-tune-panel" id="autoTunePanel" data-workspace-card="tune" data-workspace-title="チューンテーブル">
-            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r37</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
+            <div class="auto-tune-head"><span class="auto-tune-title">Tune Table v4.21-r38</span><span class="auto-tune-badge" id="autoTuneStatus">OFF</span></div>
             <div class="auto-tune-help" id="autoTuneHelp">1回の探索では「1軸」だけを動かします。探索開始値をここで指定できます。空欄なら現在の対象ルール値を起点にします。待機→ブレーキ→ブレーキ置換の順にテーブルを埋めていきます。ブレーキ置換では、低出力パワーを固定し、ブレーキ時間を短くした分だけ低出力時間を増やします。ΔV、Brake VBAT、WAIT Sag、温度は参考表示のみで、補正には使いません。</div>
             <div class="auto-tune-lap-rec warn" id="autoTuneLapRecommendation"><span class="rec-text">チューン前に周回タイマー設定を行うことを推奨します。</span><button type="button" class="btn btn-secondary" id="btnAutoTuneOpenLapBoundary">周回タイマー設定を開く</button></div>
             <div class="auto-tune-sentence" id="autoTuneSentence">チューン条件を選択すると、探索内容を自然文で表示します。</div>
@@ -3866,7 +3866,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   // callbacks can otherwise request the next row while the previous write is
   // still settling. Queue every write and add a small guard gap to prevent
   // "GATT operation already in progress" failures.
-  const GATT_WRITE_GAP_MS=12;
+  const GATT_WRITE_GAP_MS=2;
   let gattWriteQueue=Promise.resolve();
   let gattWriteDepth=0;
   let reliableDump={active:false,waiting:'idle',waitingSeq:0,nextSeq:0,total:null,overflow:0,entryLen:20,proto:0,logCount:0,lapCount:0,voltageCount:0,voltageCap:0,retry:0,timer:0,startedAt:0,lastPacketAt:0,duplicate:0,outOfOrder:0,failed:false};
@@ -7987,6 +7987,22 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   async function writeCommandBytes(bytes){
     await gattWrite(ch.command, Uint8Array.from(bytes), 'command');
   }
+  async function gattWriteFast(characteristic, value, label='fast-write'){
+    await requireConn();
+    const data=value instanceof Uint8Array ? value : new Uint8Array(value);
+    return queueGattWrite(label, async()=>{
+      if(characteristic.writeValueWithoutResponse){
+        await characteristic.writeValueWithoutResponse(data);
+      }else if(characteristic.writeValueWithResponse){
+        await characteristic.writeValueWithResponse(data);
+      }else{
+        await characteristic.writeValue(data);
+      }
+    });
+  }
+  async function writeCommandBytesFast(bytes){
+    await gattWriteFast(ch.command, Uint8Array.from(bytes), 'log-fast-command');
+  }
   function parseBulkRowsFromPacket(dv,count,forcedEntryLen){
     if(!count)return 0;
     const payloadLen=dv.byteLength-3;
@@ -8062,7 +8078,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       }else if(reliableDump.waiting==='seq'){
         setDumpBadge(`ログ再要求中… seq ${reliableDump.waitingSeq} / retry ${reliableDump.retry}`);
         setDumpProgress(null,`ログ再要求中… seq ${reliableDump.waitingSeq} / retry ${reliableDump.retry}`);
-        writeCommandBytes([CMD_LOG_GET,reliableDump.waitingSeq&255,(reliableDump.waitingSeq>>8)&255]).then(scheduleReliableDumpTimeout).catch(e=>toast(e.message||String(e)));
+        writeCommandBytesFast([CMD_LOG_GET,reliableDump.waitingSeq&255,(reliableDump.waitingSeq>>8)&255]).then(scheduleReliableDumpTimeout).catch(e=>toast(e.message||String(e)));
       }
     },RELIABLE_DUMP_TIMEOUT_MS);
   }
@@ -8080,7 +8096,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     updateTelemetryLogProgressFromDump(total?pct:null,got,total,q);
     if(!lapTimerState.running)updateLapTimerDisplay(`停止後ログを受信中です。リアルタイム表示済みのラップは保持し、受信完了後にログ内容と照合します。${total?` (${pct}%)`:''}`);
     try{
-      await writeCommandBytes([CMD_LOG_GET,seq&255,(seq>>8)&255]);
+      await writeCommandBytesFast([CMD_LOG_GET,seq&255,(seq>>8)&255]);
       scheduleReliableDumpTimeout();
     }catch(e){
       const msg=e.message||String(e);
@@ -8107,8 +8123,8 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     reliableDump.waiting='meta';
     reliableDump.startedAt=performance.now();
     reliableDump.retry=0;
-    setDumpBadge('ログ取得開始… 本体の件数確認中');
-    setDumpProgress(null,'停止後ログを受信開始… 本体の件数確認中');
+    setDumpBadge('ログ取得開始… 本体の件数確認中（高速取得）');
+    setDumpProgress(null,'停止後ログを受信開始… 本体の件数確認中（高速取得）');
     setTelemetryLogProgress(null,'電圧ログを受信開始… 停止後ログ内の時系列サンプルを確認中');
     updateLapTimerDisplay('停止後ログを受信中です。リアルタイム表示済みのラップは保持し、受信完了後にログ内容と照合します。');
     await writeCommandBytes([CMD_LOG_REQUEST]);
@@ -9348,7 +9364,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
 
 
 
-  // ===== v4.21-r37 Guided setup wizard: full-screen, one decision per screen, iterative correction loop =====
+  // ===== v4.21-r38 Guided setup wizard: full-screen, one decision per screen, iterative correction loop =====
   const GUIDE_STEP_COUNT=17;
   const GUIDE_STEP_CURVE_HOLD=6;
   const GUIDE_STEP_TRIGGER=7;
@@ -9659,7 +9675,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   function guideRuleLogAnalysisHtml(){
     const hasLog=(logRows||[]).some(r=>r && Number(r.seg)!==SEG.VOLTAGE);
     if(!hasLog){
-      return `<div class="guide-log-check"><b>停止後ログの認識チェック</b><p>停止後ログを取得すると、起点として使おうとしているセクションが実際に何回認識されたかをここに表示します。</p><div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-action="log">停止後ログを取得</button></div></div>`;
+      return `<div class="guide-log-check"><b>停止後ログの認識チェック</b><p>停止後ログを取得すると、起点として使おうとしているセクションが実際に何回認識されたかをここに表示します。r38ではログ取得コマンドを高速化していますが、件数が多い場合は少し待ちます。</p><div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-action="log">停止後ログを取得</button></div></div>`;
     }
     const lapCount=guideLapCountFromStoppedLog();
     const rulesForLog=guideActiveRulesForLog();
@@ -9819,7 +9835,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
           {value:'direct',label:'目的位置そのものを起点にする',hint:'遅れる可能性があります。検証用・低速時のみ。'}
         ],guideDraft.originPolicy,'originPolicy')+`<div class="guide-wizard-note">例: ウェーブで止めたい場合、「ウェーブを見てからブレーキ」では遅いことがあります。手前の左/右カーブや直線継続などを起点にします。</div>`;
       case 5:{
-        const baseSegs=[SEG.STRAIGHT,SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
+        const baseSegs=[SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
         const segs=guideDraft.showInstantCurves?[SEG.LEFT,SEG.RIGHT,...baseSegs]:baseSegs;
         const buttons=segs.map(seg=>{
           const sel=guideDraft.originSegments.includes(seg);
@@ -9828,7 +9844,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
         }).join('');
         const instantNote=guideDraft.showInstantCurves
           ? `<div class="guide-wizard-note"><b>単発カーブを表示中:</b> 左C/右Cはウェーブの入口・出口でも反応しやすいため、誤発動の原因になります。使う場合は、必ず停止後ログで本当にその場所だけに出ているか確認してください。</div>`
-          : `<div class="guide-wizard-note"><b>左C/右C単発は非表示にしています。</b> ウェーブの入口・出口でも反応しやすく、初見では誤発動の原因になりやすいためです。基本は「左C継続」「右C継続」を使い、次の画面で90度・180度・それ以上を選んでください。</div>`;
+          : `<div class="guide-wizard-note"><b>左C/右C単発と直線単発は、かんたん設定では基本的に使いません。</b> 左C/右C単発はウェーブの入口・出口でも反応しやすく、直線単発は発動起点として不安定です。基本は「左C継続」「右C継続」「直線継続」を使ってください。</div>`;
         const instantButton=`<button type="button" class="btn btn-secondary" data-guide-toggle-instant-curves="1">${guideDraft.showInstantCurves?'単発の左C/右Cを隠す':'上級者向け: 単発の左C/右Cを表示'}</button>`;
         return `<h3>起点セクションを選んでください。</h3>${guideSegOrderHtml()}<p>上の「選択した起点の順序」の順に認識します。最初は1つ、多くても2つまでにしてください。3つ以上つなげると、1つでも認識が外れた時点で発動しません。</p>${instantNote}<div>${instantButton}</div><div class="guide-wizard-options guide-wizard-two">${buttons}</div>`;
       }
@@ -9857,7 +9873,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
       case GUIDE_STEP_RUN:
         return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>今回のルールセット</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、かんたん設定で作ったルールセットだけを一時適用します。過去の通常ルールは今回の走行には使いません。</div></div>${guideRuleLogAnalysisHtml()}<div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="resetble">BLEリセット</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint"><b>接続が遅い場合:</b> BLEリセット → ミニ四駆側の電源入れ直し → マシン接続、の順で試してください。Chrome/Edge以外では接続できません。</div></div>`;
       case GUIDE_STEP_RESULT:
-        return `<h3>走行後、結果を選んでください。</h3><p>もっとも近い結果を選んでください。次の画面で、改善するか、ルールを追加するか、もう一度走るかを選べます。</p>`+guideSelectHtml([
+        return `<h3>走行後、結果を選んでください。</h3><p>もっとも近い結果を選んでください。選ぶと、そのまま修正・追加・再走行を選ぶ画面へ進みます。</p>`+guideSelectHtml([
           {value:'ok',label:'思い通りの場所で発動した'},
           {value:'nofire',label:'発動しなかった'},
           {value:'early',label:'早すぎた'},
@@ -9873,7 +9889,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     }
   }
   function guideInlineOriginEditorHtml(){
-    const baseSegs=[SEG.STRAIGHT,SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
+    const baseSegs=[SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK];
     const segs=guideDraft.showInstantCurves?[SEG.LEFT,SEG.RIGHT,...baseSegs]:baseSegs;
     const buttons=segs.map(seg=>{
       const sel=(guideDraft.originSegments||[]).includes(seg);
@@ -9882,7 +9898,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     }).join('');
     const instantNote=guideDraft.showInstantCurves
       ? `<div class="guide-wizard-note"><b>単発の左C/右Cを表示中:</b> 誤発動しやすいため、ログでその場所だけに出ているか確認してください。</div>`
-      : `<div class="guide-wizard-note"><b>左C/右C単発は非表示です。</b> 基本は左/右カーブ継続を使います。</div>`;
+      : `<div class="guide-wizard-note"><b>左C/右C単発と直線単発は非推奨です。</b> 基本は左/右カーブ継続または直線継続を使います。</div>`;
     return `<div class="guide-wizard-summary"><b>起点を直接編集</b>${guideSegOrderHtml()}${instantNote}<div class="guide-improve-actions"><button type="button" class="btn btn-secondary" data-guide-toggle-instant-curves="1">${guideDraft.showInstantCurves?'単発の左C/右Cを隠す':'上級者向け: 単発の左C/右Cを表示'}</button><button type="button" class="btn btn-secondary" data-guide-keep-first-origin="1">起点を1つに減らす</button></div><div class="guide-wizard-options guide-wizard-two">${buttons}</div></div>`;
   }
   function guideInlineTriggerEditorHtml(){
@@ -9934,6 +9950,12 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     document.querySelectorAll('[data-guide-set]').forEach(b=>{b.onclick=()=>{
       const key=b.dataset.guideSet;
       const val=b.dataset.guideValue;
+      if(key==='lastResult'){
+        guideDraft.lastResult=val;
+        guideStep=GUIDE_STEP_RESULT_MENU;
+        guideClampDraft();renderGuideWizard();
+        return;
+      }
       if(key==='curveHoldPreset'){
         guideDraft.curveHoldKind=val;
         if(val==='curve90'||val==='curve180'||val==='curveLong')guideDraft.curveHoldMs=curveHoldPresetMs(val);
@@ -10079,7 +10101,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
     }else{
       guideRuleBook[guideDraft.ruleIndex]=r;
     }
-    // v4.21-r37: かんたん設定では、ここで作ったルールセットだけを走行へ反映する。
+    // v4.21-r38: かんたん設定では、ここで作ったルールセットだけを走行へ反映する。
     // 以前に通常画面で作ったルールは混ぜないが、かんたん設定内で追加した2本目・3本目は維持する。
     guideSyncRuntimeRules();
     toast(`かんたん設定のルールセット ${rules.length}件を反映しました。`);
@@ -10997,7 +11019,7 @@ body.header-collapsed[data-run-state="2"] .header-reveal-stop{display:inline-fle
   setupHelp();
 
   // ============================================================
-  // v4.21-r37 race console: 表示専用の追加フック。
+  // v4.21-r38 race console: 表示専用の追加フック。
   // プロトコル・状態ロジックには触れない (datasetとclass操作のみ)。
   // ============================================================
   (function raceConsoleUi(){
