@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI制御 M四駆 Rules Realtime v4.21-r39 race console</title>
+<title>AI制御 M四駆 Rules Realtime v4.21-r40 race console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@500;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -3237,7 +3237,7 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
 <div class="stars"></div><div class="grid-bg"></div><div class="aurora"></div>
 
 <header class="header"><div class="header-inner"><div class="header-top">
-  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r39 race console</span></h1>
+  <h1>AI制御 <span class="accent">M四駆</span> Rules Realtime <span class="vtag">v4.21-r40 race console</span></h1>
   <div class="machine-controls">
     <button class="header-btn success" id="btnStart">▶ 走行開始</button>
     <button class="header-btn danger" id="btnStop">■ 停止</button>
@@ -9579,6 +9579,16 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
       speedMs:speedAct?Number(speedAct.durationMs)||300:300
     };
   }
+  function guideMetaFromCurrentRule(r,index){
+    const actual=guideInferMetaFromRule(r,index)||{};
+    const previous=(r&&r._guideMeta)||{};
+    return {
+      ...actual,
+      normalPct:guideDraft.normalPct,
+      targetPlace:previous.targetPlace||actual.targetPlace||'目的位置',
+      originPolicy:previous.originPolicy||actual.originPolicy||'before'
+    };
+  }
   function guideRuleForRuntime(r){
     const out=JSON.parse(JSON.stringify(r||{}));
     // v4.21-r39: _guideMeta は保持する。次回かんたん設定を開いたときの引き継ぎ元になる。
@@ -9594,7 +9604,14 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     const i=Number(index);
     if(!Number.isInteger(i)||i<0||i>=guideRuleBook.length){toast('編集するルールが見つかりません');return;}
     const r=guideRuleBook[i];
-    const meta=r._guideMeta||guideInferMetaFromRule(r,i);
+    const editable=guideRuleEditability(r);
+    if(!editable.ok){
+      toast(`このルールはかんたん設定では編集できません: ${editable.reason}`);
+      guideOpenRuleInNormalEditor(i);
+      return;
+    }
+    const meta=guideMetaFromCurrentRule(r,i);
+    r._guideMeta=meta;
     guideRestoreDraftMeta(meta,i);
     guideStep=targetStep;
     toast(`ルール${i+1}を再編集します`);
@@ -9663,9 +9680,10 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     return `${start}、認識後に${guideDraft.waitMs}ms待ってから、${guideActionLabel()}を実行します。`;
   }
   function guideMiniSummary(){
-    const count=guideRuleBook.length + ((guideDraft.ruleIndex==null)?1:0);
-    const countBadge=`<span class="guide-rule-count">かんたん設定ルール ${Math.max(1,count)}件目</span>`;
-    if(guideStep<=1)return `<b>考え方:</b> 目的位置そのものではなく、手前の起点から時間差で合わせます。${countBadge}`;
+    if(guideStep===0)return `<b>ルール選択:</b> 編集する既存ルール、または新規作成を選択してください。<span class="guide-rule-count">全${guideRuleBook.length}件</span>`;
+    const label=guideDraft.ruleIndex==null?'新しいルール':`ルール${guideDraft.ruleIndex+1}`;
+    const countBadge=`<span class="guide-rule-count">${label}</span>`;
+    if(guideStep===1)return `<b>考え方:</b> 目的位置そのものではなく、手前の起点から時間差で合わせます。${countBadge}`;
     return `<b>現在の設定:</b> ${guideNaturalSentence()} ${countBadge}`;
   }
   // v4.21-r39.1: 元コードが参照していた未定義ヘルパーを実装。
@@ -9686,27 +9704,78 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     return ms>0?`${label} ${ms}ms`:label;
   }
   function guideRuleToSentence(r,i){
-    if(r && r._guideMeta && r._guideMeta.sentence)return `ルール${i+1}: ${esc(r._guideMeta.sentence)}`;
-    const pattern=(r.pattern||[]).map(s=>shortSegLabel(s)).join(' → ')||'未設定';
-    const trig=triggerModeText(r.triggerMode,r.triggerN,r.triggerPhase);
-    const acts=(r.actions||[]).map(actionToText).join(' → ')||'アクションなし';
-    return `ルール${i+1}: 「${pattern}」を起点として、${trig}、${acts}を実行`;
+    return `ルール${i+1}: ${formatRuleSentenceHtml(r)}`;
   }
   function guideRuleBookHtml(options={}){
     const showActions=!!options.actions;
     const items=[];
     (guideRuleBook||[]).forEach((r,i)=>{
       const editing=i===guideDraft.ruleIndex;
-      const body=editing?guideNaturalSentence():guideRuleToSentence(r,i);
-      const actions=showActions?`<div class="guide-rule-actions"><button type="button" class="btn success" data-guide-edit-rule="${i}">このルールを編集</button><button type="button" class="btn btn-secondary" data-guide-edit-rule-confirm="${i}">確認から再開</button><button type="button" class="btn danger" data-guide-delete-rule="${i}">削除</button></div>`:'';
+      const body=guideRuleToSentence(r,i);
+      const editable=guideRuleEditability(r);
+      const editActions=editable.ok
+        ? `<button type="button" class="btn success" data-guide-edit-rule="${i}">このルールを編集</button><button type="button" class="btn btn-secondary" data-guide-edit-rule-confirm="${i}">確認から再開</button>`
+        : `<button type="button" class="btn btn-secondary" data-guide-open-normal-rule="${i}">通常画面で編集</button>`;
+      const actions=showActions?`<div class="guide-rule-actions">${editActions}<button type="button" class="btn danger" data-guide-delete-rule="${i}">削除</button></div>`:'';
       items.push(`<div class="guide-rule-item ${editing?'current':''}"><b>${editing?'編集中':'追加済み'}: ルール${i+1}</b><br>${body}${actions}</div>`);
     });
     if(guideDraft.ruleIndex==null)items.push(`<div class="guide-rule-item current"><b>今回の新規ルール</b><br>${guideNaturalSentence()}</div>`);
     return '<div class="guide-rule-stack">'+items.join('')+'</div>';
   }
+  function guideRuleEditability(r){
+    const pattern=Array.isArray(r&&r.pattern)?r.pattern:[];
+    const actions=Array.isArray(r&&r.actions)?r.actions:[];
+    if(pattern.length<1)return {ok:false,reason:'起点セクションが未設定です'};
+    if(pattern.length>2)return {ok:false,reason:'起点セクションが3つ以上あります'};
+    const allowedSegs=new Set([SEG.LEFT,SEG.RIGHT,SEG.LEFT_HOLD,SEG.RIGHT_HOLD,SEG.STRAIGHT_HOLD,SEG.WAVE,SEG.LEFT_PEAK,SEG.RIGHT_PEAK]);
+    if(pattern.some(seg=>!allowedSegs.has(Number(seg))))return {ok:false,reason:'かんたん設定にない起点セクションを含みます'};
+    if(pattern.some(seg=>Number(seg)===SEG.LEFT_HOLD||Number(seg)===SEG.RIGHT_HOLD)&&Number(r&&r.curveLongMs)===0xFFFF)return {ok:false,reason:'カーブ継続時間が全体設定を継承しています'};
+    const supportedTriggers=new Set([TRIG.EVERY,TRIG.ODD,TRIG.EVEN,TRIG.EVERY_N]);
+    if(!supportedTriggers.has(Number(r&&r.triggerMode)))return {ok:false,reason:'詳細画面専用の発動回数設定を含みます'};
+    const allowed=new Set([ACTION.WAIT,ACTION.BRAKE,ACTION.SPEED]);
+    if(actions.some(a=>!a||!allowed.has(Number(a.type))))return {ok:false,reason:'停止・ロックなど詳細画面専用のアクションを含みます'};
+    if(!actions.some(a=>Number(a.type)===ACTION.BRAKE||Number(a.type)===ACTION.SPEED))return {ok:false,reason:'ブレーキまたは低出力アクションがありません'};
+    const counts={};
+    actions.forEach(a=>{const t=Number(a.type);counts[t]=(counts[t]||0)+1;});
+    if(Object.values(counts).some(n=>n>1))return {ok:false,reason:'同じ種類のアクションを複数含みます'};
+    const order=actions.map(a=>Number(a.type));
+    const canonical=[ACTION.WAIT,ACTION.BRAKE,ACTION.SPEED].filter(t=>order.includes(t));
+    if(order.some((t,i)=>t!==canonical[i]))return {ok:false,reason:'アクション順がかんたん設定の構成外です'};
+    return {ok:true,reason:''};
+  }
+  function guideOpenRuleInNormalEditor(index){
+    const i=Number(index);
+    if(!Number.isInteger(i)||i<0||i>=rules.length)return;
+    selectedRule=i;
+    closeGuideWizardScreen();
+    setTimeout(()=>{
+      if(typeof setWorkspaceView==='function')setWorkspaceView('rules');
+      if(typeof renderRules==='function')renderRules();
+      const cards=document.querySelectorAll('.rule-card');
+      if(cards[i]&&cards[i].scrollIntoView)cards[i].scrollIntoView({behavior:'smooth',block:'center'});
+    },120);
+  }
+  function guideStartNewRule(){
+    guideResetDraftForNewRule();
+    guideStep=1;
+    toast('新しいルールを作成します');
+    renderGuideWizard();
+  }
+  function guideRuleChooserHtml(){
+    const rows=(guideRuleBook||[]).map((r,i)=>{
+      const editable=guideRuleEditability(r);
+      const action=editable.ok
+        ? `<button type="button" class="btn success" data-guide-start-edit-rule="${i}">このルールを編集</button>`
+        : `<button type="button" class="btn btn-secondary" data-guide-open-normal-rule="${i}">通常画面で編集</button>`;
+      const note=editable.ok?'':`<div class="guide-rule-manage-hint">かんたん設定では編集不可: ${esc(editable.reason)}</div>`;
+      return `<div class="guide-rule-item"><b>ルール${i+1}</b><br>${formatRuleSentenceHtml(r)}${note}<div class="guide-rule-actions">${action}</div></div>`;
+    }).join('');
+    const list=rows||'<div class="guide-wizard-note">まだルールはありません。「新しいルールを作成」から始めてください。</div>';
+    return `<h3>編集するルールを選んでください。</h3><p>ここに表示される内容は、通常画面のルール一覧と同じです。既存ルールを編集するか、新しいルールを作成します。</p><div class="guide-rule-stack">${list}</div><div class="guide-rule-actions"><button type="button" class="btn success" data-guide-start-new-rule="1">＋ 新しいルールを作成</button></div>`;
+  }
   function guideRuleManagerHtml(){
     const has=(guideRuleBook||[]).length>0;
-    return `<div class="guide-wizard-summary"><div class="guide-rule-manage-head"><span>かんたん設定のルール一覧</span><span class="guide-rule-count">${guideRuleBook.length}件</span></div><div class="guide-rule-manage-hint">2件目・3件目を作った後でも、ここから編集するルールを選べます。どのルールを直しているか分からなくなったら、まずこの一覧に戻ってください。</div>${has?guideRuleBookHtml({actions:true}):'<div class="guide-wizard-note">まだ追加済みルールはありません。</div>'}<div class="guide-rule-actions"><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">このルールセットで走る</button></div></div>`;
+    return `<div class="guide-wizard-summary"><div class="guide-rule-manage-head"><span>ルール一覧（通常画面と共通）</span><span class="guide-rule-count">${guideRuleBook.length}件</span></div><div class="guide-rule-manage-hint">通常画面と同じルールを表示しています。どちらの画面で変更しても、次に開いたときは最新の実ルールから読み込みます。</div>${has?guideRuleBookHtml({actions:true}):'<div class="guide-wizard-note">まだ追加済みルールはありません。</div>'}<div class="guide-rule-actions"><button type="button" class="btn" data-guide-new-rule="1">別のルールを追加する</button><button type="button" class="btn btn-secondary" data-guide-result-action="run">このルールセットで走る</button></div></div>`;
   }
   function guideActiveRulesForLog(){
     const list=(guideRuleBook&&guideRuleBook.length)?guideRuleBook:[];
@@ -9845,7 +9914,7 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
   function guideBookFromRules(){
     return (rules||[]).map((r,i)=>{
       const c=JSON.parse(JSON.stringify(r||{}));
-      if(!c._guideMeta){const m=guideInferMetaFromRule(c,i);if(m)c._guideMeta=m;}
+      c._guideMeta=guideMetaFromCurrentRule(c,i);
       return c;
     });
   }
@@ -9911,7 +9980,7 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     guideClampDraft();
     switch(guideStep){
       case 0:
-        return `<h3>1つずつ設定します。</h3><p>この画面では、必要な質問だけを順番に出します。通常画面のルール表やログは表示しません。</p>${guideRuleBook.length?`<div class=\"guide-wizard-good\"><b>引き継ぎ:</b> 既存のルール${guideRuleBook.length}件を引き継ぎました。ここで新しく作るルールは${guideRuleBook.length+1}件目として追加され、既存分は消えません。走行画面・結果メニューの一覧から編集・削除できます。</div>`:''}<div class="guide-wizard-note"><b>重要:</b> 目的の場所で止めたい場合、目的の場所を見てからブレーキすると遅いことがあります。多くの場合は、手前の特徴的なセクションを起点にして、待機時間で合わせます。</div>`;
+        return guideRuleChooserHtml();
       case 1:
         return `<h3>走行時の通常速度を決めます。</h3><p>まず、ルール発動前の基本速度を決めます。速すぎると認識・ブレーキ調整が難しくなるため、最初は50〜70%程度から試すのがおすすめです。</p>${guideSpeedSelectHtml()}<div class="guide-wizard-good">この設定は通常画面の「通常速度」と同期します。必要なら後から変更できます。</div>`;
       case 2:
@@ -9969,9 +10038,9 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
       case GUIDE_STEP_SPEED:
         return `<h3>低出力を決めます。</h3><p>低出力は、ブレーキ後または単独で、モーターを弱く回し続ける設定です。</p><div class="guide-param-grid">${guideNumberHtml('guideSpeedPct',guideDraft.speedPct,'%',10,100,5,'低出力の強さ')}${guideNumberHtml('guideSpeedMs',guideDraft.speedMs,'ms',0,5000,10,'低出力を続ける時間')}</div>`;
       case GUIDE_STEP_CONFIRM:
-        return `<h3>設定したルールを確認します。</h3><p>接続・走行の前に、自然文でもう一度確認してください。複数ルールを追加した場合は、かんたん設定で作ったルールセットだけを走行に使います。</p><div class="guide-wizard-summary"><div><b>通常速度:</b> ${guideDraft.normalPct}%</div><div class="guide-wizard-natural">${guideNaturalSentence()}</div><div class="guide-wizard-note"><b>重要:</b> 過去に通常画面で作ったルールは混ぜません。かんたん設定で追加したルールだけを反映します。</div><div><b>この内容でルール設計に反映し、接続・走行画面へ進みます。</b></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-confirm-run="1">接続・走行画面へ進む</button></div></div>`;
+        return `<h3>設定したルールを確認します。</h3><p>接続・走行の前に、自然文でもう一度確認してください。ここで反映するルールは通常画面のルール一覧と共通です。</p><div class="guide-wizard-summary"><div><b>通常速度:</b> ${guideDraft.normalPct}%</div><div class="guide-wizard-natural">${guideNaturalSentence()}</div><div class="guide-wizard-note"><b>共通ルール:</b> 通常画面で作成したルールも同じ一覧に残り、選択中のルールだけを更新します。</div><div><b>この内容でルール設計に反映し、接続・走行画面へ進みます。</b></div><div class="guide-improve-actions"><button type="button" class="btn success" data-guide-confirm-run="1">接続・走行画面へ進む</button></div></div>`;
       case GUIDE_STEP_RUN:
-        return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>今回のルールセット</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、上に表示中のルールセット（引き継ぎ分を含む）を一時適用します。電源OFF後にも使う場合は、結果メニューの「本体へ保存」で保存してください。</div></div>${guideRuleLogAnalysisHtml()}<div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="resetble">BLEリセット</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint"><b>接続が遅い場合:</b> BLEリセット → ミニ四駆側の電源入れ直し → マシン接続、の順で試してください。Chrome/Edge以外では接続できません。</div></div>`;
+        return `<h3>接続して走行します。</h3><p>この画面では接続・走行開始・停止だけを操作します。走行後に「結果入力へ」を押してください。</p><div class="guide-conn-card" id="guideConnCard"><div class="guide-conn-left"><span class="guide-conn-dot" id="guideConnDot"></span><div><div class="guide-conn-status" id="guideConnText">マシン未接続</div><div class="guide-conn-caption" id="guideConnCaption">接続ボタンを押してマシンを選択してください。</div></div></div><span class="seg-pip seg-system">BLE</span></div><div class="guide-wizard-summary"><b>現在のルール一覧（通常画面と共通）</b><div><b>通常速度:</b> ${guideDraft.normalPct}%</div>${guideRuleBookHtml({actions:true})}<div class="guide-wizard-note">この画面で走行開始すると、上に表示中のルールセット（引き継ぎ分を含む）を一時適用します。電源OFF後にも使う場合は、結果メニューの「本体へ保存」で保存してください。</div></div>${guideRuleLogAnalysisHtml()}<div class="guide-action-panel"><div class="guide-action-buttons"><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="connect">マシン接続</button><button type="button" class="btn btn-secondary guide-action-btn" data-guide-action="resetble">BLEリセット</button><button type="button" class="btn success guide-action-btn" data-guide-action="start">▶ 走行開始</button><button type="button" class="btn danger guide-action-btn" data-guide-action="stop">■ 停止</button></div><div class="guide-action-hint"><b>接続が遅い場合:</b> BLEリセット → ミニ四駆側の電源入れ直し → マシン接続、の順で試してください。Chrome/Edge以外では接続できません。</div></div>`;
       case GUIDE_STEP_RESULT:
         return `<h3>走行後、結果を選んでください。</h3><p>もっとも近い結果を選んでください。選ぶと、そのまま修正・追加・再走行を選ぶ画面へ進みます。</p>`+guideSelectHtml([
           {value:'ok',label:'思い通りの場所で発動した'},
@@ -10096,6 +10165,9 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     };});
     document.querySelectorAll('[data-guide-confirm-run]').forEach(b=>{b.onclick=()=>{guideApplyAndGoRun();};});
     document.querySelectorAll('[data-guide-back-advice]').forEach(b=>{b.onclick=()=>{guideStep=GUIDE_STEP_IMPROVE;renderGuideWizard();};});
+    document.querySelectorAll('[data-guide-start-edit-rule]').forEach(b=>{b.onclick=()=>{guideLoadRuleForEdit(Number(b.dataset.guideStartEditRule),1);};});
+    document.querySelectorAll('[data-guide-start-new-rule]').forEach(b=>{b.onclick=()=>{guideStartNewRule();};});
+    document.querySelectorAll('[data-guide-open-normal-rule]').forEach(b=>{b.onclick=()=>{guideOpenRuleInNormalEditor(Number(b.dataset.guideOpenNormalRule));};});
     document.querySelectorAll('[data-guide-edit-rule]').forEach(b=>{b.onclick=()=>{guideLoadRuleForEdit(Number(b.dataset.guideEditRule),2);};});
     document.querySelectorAll('[data-guide-edit-rule-confirm]').forEach(b=>{b.onclick=()=>{guideLoadRuleForEdit(Number(b.dataset.guideEditRuleConfirm),GUIDE_STEP_CONFIRM);};});
     document.querySelectorAll('[data-guide-delete-rule]').forEach(b=>{b.onclick=()=>{guideDeleteRule(Number(b.dataset.guideDeleteRule));};});
@@ -10151,9 +10223,11 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
       body.innerHTML=guideStepHtml();
       if(guideAdvice && guideStep<GUIDE_STEP_IMPROVE)body.innerHTML=guideAdviceBannerHtml()+body.innerHTML;
     }
-    if(back)back.disabled=guideStep===0;
+    const choosingRule=guideStep===0;
+    if(back){back.hidden=choosingRule;back.disabled=choosingRule;}
     if(next){
-      next.disabled=!guideValidateStep();
+      next.hidden=choosingRule;
+      next.disabled=choosingRule||!guideValidateStep();
       if(guideStep===GUIDE_STEP_CONFIRM)next.textContent='ルールに反映して走行へ';
       else if(guideStep===GUIDE_STEP_RUN)next.textContent='結果入力へ';
       else if(guideStep===GUIDE_STEP_RESULT)next.textContent='次へ';
@@ -10169,12 +10243,18 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     guideClampDraft();
     const pattern=[...(guideDraft.originSegments||[])];
     if(pattern.length===0)throw new Error('起点セクションが未選択です');
-    const r=defaultRule(pattern);
+    const editing=Number.isInteger(guideDraft.ruleIndex)&&guideDraft.ruleIndex>=0&&guideDraft.ruleIndex<guideRuleBook.length;
+    const source=editing?guideRuleBook[guideDraft.ruleIndex]:null;
+    const r=source?JSON.parse(JSON.stringify(source)):defaultRule(pattern);
+    r.pattern=pattern;
     r.actions=[];
     if(guideDraft.waitMs>0)r.actions.push({type:ACTION.WAIT,durationMs:guideDraft.waitMs,strength:0});
     if(guideDraft.actionKind==='brake'||guideDraft.actionKind==='brake_speed')r.actions.push({type:ACTION.BRAKE,durationMs:guideDraft.brakeMs,strength:0});
     if(guideDraft.actionKind==='speed'||guideDraft.actionKind==='brake_speed')r.actions.push({type:ACTION.SPEED,durationMs:guideDraft.speedMs,strength:pctToDuty(guideDraft.speedPct)});
     if(r.actions.length===0)r.actions.push({type:ACTION.BRAKE,durationMs:250,strength:0});
+    r.triggerMode=TRIG.EVERY;
+    r.triggerN=2;
+    r.triggerPhase=1;
     if(guideDraft.trigger==='odd')r.triggerMode=TRIG.ODD;
     else if(guideDraft.trigger==='even')r.triggerMode=TRIG.EVEN;
     else if(guideDraft.trigger==='onlyN'){
@@ -10182,11 +10262,9 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
       r.triggerN=clamp(Number(guideDraft.originCountPerLap)||1,1,255);
       r.triggerPhase=clamp(Number(guideDraft.triggerN)||1,1,r.triggerN);
     }
-    else r.triggerMode=TRIG.EVERY;
-    if((pattern||[]).some(s=>s===SEG.LEFT_HOLD||s===SEG.RIGHT_HOLD)){
+    if(pattern.some(s=>s===SEG.LEFT_HOLD||s===SEG.RIGHT_HOLD)){
       r.curveLongMs=clamp(Number(guideDraft.curveHoldMs)||100,30,1200);
     }
-    r.priority=120;
     ensureRuleDefaults(r);
     r._guideMeta=guideDraftMeta();
     return r;
@@ -10204,7 +10282,7 @@ var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZa
     // v4.21-r39: ルール帳は開いた時点で既存ルールを引き継いでいるため、この置換は非破壊。
     // (帳に無いルールは存在しない = 引き継ぎ分+今回の追加分がそのまま走行へ反映される)
     guideSyncRuntimeRules();
-    toast(`かんたん設定のルールセット ${rules.length}件を反映しました。`);
+    toast(`ルール${guideDraft.ruleIndex+1}を反映しました（全${rules.length}件）。`);
   }
   function guideApplyAndGoRun(){
     guideApplyDraftRule();
